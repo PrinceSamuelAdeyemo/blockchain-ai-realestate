@@ -1,0 +1,7 @@
+#AI/ML
+ai/ai_venv
+ai/.env
+
+#Backend
+backend/backend_venv
+backend/.env
