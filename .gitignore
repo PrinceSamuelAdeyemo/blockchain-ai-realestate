@@ -4,4 +4,4 @@ ai/.env
 
 #Backend
 backend/backend_venv
-backend/.env
+backend/realestate_backend/.env
