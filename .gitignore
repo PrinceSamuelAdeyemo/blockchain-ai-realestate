@@ -7,3 +7,10 @@ backend/backend_venv
 backend/realestate_backend/.env
 backend/realestate_backend/realestate_backend/__pycache__
 backend/realestate_backend/realestate_backend/migrations/__pycache__
+
+#Frontend
+frontend/dapp-ai-realestate/node_modules
+frontend/dapp-ai/realestate/.env
+frontend/dapp-ai/realestate/.next/static
+frontend/dapp-ai/realestate/.next/cache
+frontend/dapp-ai/realestate/.next/server/chunks
