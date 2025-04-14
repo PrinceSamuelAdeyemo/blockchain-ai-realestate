@@ -13,4 +13,5 @@ frontend/dapp-ai-realestate/node_modules
 frontend/dapp-ai/realestate/.env
 frontend/dapp-ai/realestate/.next/static
 frontend/dapp-ai/realestate/.next/cache
-frontend/dapp-ai/realestate/.next/server/chunks
+frontend/dapp-ai-realestate/.next/trace
+frontend/dapp-ai-realestate/.next/static/chunks/

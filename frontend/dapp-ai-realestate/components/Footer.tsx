@@ -2,10 +2,10 @@ import React from 'react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-800 text-white">
+    <footer className="bg-gray-800 text-white h-full">
       <div className="container mx-auto px-5 py-3">
         <div className="flex flex-wrap">
-          <div className="w-full md:w-7/12">
+          <div className="w-full md:w-1/2">
             <div className="w-full">
               <p className="text-xl font-bold">ABOUT US</p>
               <p>Home and properties for everyone, we help to provide excellent and affordable house and housing facilities for everyone.</p>
@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-5/12 mt-4 md:mt-0">
+          <div className="w-full md:w-1/2 mt-4 md:mt-0">
             <div className="w-full">
               <p className="text-xl font-bold text-white">POLICY</p>
               <div className="flex flex-wrap">
