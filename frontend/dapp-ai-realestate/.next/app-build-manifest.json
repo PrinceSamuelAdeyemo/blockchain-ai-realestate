@@ -1,13 +1,13 @@
 {
   "pages": {
-    "/login/page": [
+    "/page": [
       "static/chunks/node_modules_next_dist_1a6ee436._.js",
       "static/chunks/app_favicon_ico_mjs_659ce808._.js",
       "static/chunks/[root-of-the-server]__9d126714._.css",
       "static/chunks/app_layout_tsx_c0237562._.js",
-      "static/chunks/node_modules_next_7272718b._.js",
-      "static/chunks/app_login_page_tsx_ed82f28e._.js",
-      "static/chunks/app_login_page_tsx_b2f3bef0._.js",
+      "static/chunks/node_modules_next_6bab6250._.js",
+      "static/chunks/components_25d20422._.js",
+      "static/chunks/app_page_tsx_b2f3bef0._.js",
       "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_fd44f5a4._.js",
       "static/chunks/node_modules_next_dist_compiled_2ce9398a._.js",
       "static/chunks/node_modules_next_dist_client_8f19e6fb._.js",
