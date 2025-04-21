@@ -62,6 +62,32 @@ class VotingProposal(models.Model):
     def __str__(self):
         return f"Proposal: {self.title} ({self.get_status_display()})"
     
+    def execute_proposal(self):
+        from web3 import Web3
+        from .utils import get_web3_provider
+        
+        if self.status != 'PASSED':
+            raise ValueError("Only passed proposals can be executed")
+            
+        w3 = get_web3_provider()
+        tx_hashes = []
+        
+        for call in self.execution_calls:
+            contract = SmartContract.objects.get(address=call['contract'])
+            contract_instance = w3.eth.contract(
+                address=call['contract'],
+                abi=contract.abi.abi_json
+            )
+            tx_hash = getattr(contract_instance.functions, call['function'])(*call['args']).transact({
+                'from': settings.GOVERNANCE_WALLET
+            })
+            tx_hashes.append(tx_hash.hex())
+        
+        self.execution_tx = json.dumps(tx_hashes)
+        self.status = 'IMPLEMENTED'
+        self.executed_at = timezone.now()
+        self.save()
+    
     
 class Vote(models.Model):
     VOTE_CHOICES = (
