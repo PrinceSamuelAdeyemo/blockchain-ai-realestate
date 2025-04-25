@@ -19,13 +19,13 @@ class VotingProposal(models.Model):
 
     # Core Relationships
     tokenized_asset = models.ForeignKey(
-        'TokenizedAsset',
+        'tokenization.TokenizedAsset',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name='proposals'
     )
-    proposed_by = models.ForeignKey('UserProfile', on_delete=models.PROTECT)
+    proposed_by = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT)
 
     # Proposal Details
     proposal_type = models.CharField(max_length=10, choices=PROPOSAL_TYPES)
@@ -98,7 +98,7 @@ class Vote(models.Model):
 
     # Core Relationships
     proposal = models.ForeignKey('VotingProposal', on_delete=models.CASCADE, related_name='votes')
-    voter = models.ForeignKey('UserProfile', on_delete=models.PROTECT)
+    voter = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT)
     
     # Voting Data
     choice = models.CharField(max_length=7, choices=VOTE_CHOICES)
@@ -108,7 +108,7 @@ class Vote(models.Model):
     # Verification
     signature = models.CharField(max_length=132)  # EIP-712 signature
     is_delegated = models.BooleanField(default=False)
-    delegate = models.ForeignKey('UserProfile', on_delete=models.SET_NULL, null=True, blank=True, related_name='delegated_votes')
+    delegate = models.ForeignKey('core.UserProfile', on_delete=models.SET_NULL, null=True, blank=True, related_name='delegated_votes')
     
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
