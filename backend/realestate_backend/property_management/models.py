@@ -16,7 +16,7 @@ class Lease(models.Model):
     )
 
     # Core Relationships
-    property = models.ForeignKey('Property', on_delete=models.CASCADE, related_name='leases')
+    property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='leases')
     tenant = models.ForeignKey('Tenant', on_delete=models.PROTECT, related_name='leases')
     
     # Lease Terms
@@ -36,7 +36,7 @@ class Lease(models.Model):
     
     # Digital Integration
     document = models.FileField(upload_to='lease_agreements/')
-    smart_contract = models.ForeignKey('SmartContract', on_delete=models.SET_NULL, null=True, blank=True)
+    smart_contract = models.ForeignKey('smartcontract.SmartContract', on_delete=models.SET_NULL, null=True, blank=True)
     
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
@@ -112,9 +112,9 @@ class MaintenanceRequest(models.Model):
     )
 
     # Core Relationships
-    property = models.ForeignKey('Property', on_delete=models.CASCADE, related_name='maintenance_requests')
-    submitted_by = models.ForeignKey('UserProfile', on_delete=models.PROTECT, related_name='submitted_requests')
-    assigned_to = models.ForeignKey('UserProfile', on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_requests')
+    property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='maintenance_requests')
+    submitted_by = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT, related_name='submitted_requests')
+    assigned_to = models.ForeignKey('core.UserProfile', on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_requests')
     
     # Request Details
     title = models.CharField(max_length=200)
@@ -161,8 +161,8 @@ class Inspection(models.Model):
     )
 
     # Core Relationships
-    property = models.ForeignKey('Property', on_delete=models.CASCADE, related_name='inspections')
-    conducted_by = models.ForeignKey('UserProfile', on_delete=models.PROTECT, related_name='conducted_inspections')
+    property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='inspections')
+    conducted_by = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT, related_name='conducted_inspections')
     
     # Inspection Details
     inspection_type = models.CharField(max_length=10, choices=INSPECTION_TYPES)
