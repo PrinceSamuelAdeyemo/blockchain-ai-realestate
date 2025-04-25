@@ -9,8 +9,8 @@ class Valuation(models.Model):
     )
 
     # Core Relationships
-    property = models.ForeignKey('Property', on_delete=models.CASCADE, related_name='valuations')
-    model_version = models.ForeignKey('ai.ModelVersion', on_delete=models.SET_NULL, null=True, blank=True)
+    property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='valuations')
+    model_version = models.ForeignKey('ai_integration.ModelVersion', on_delete=models.SET_NULL, null=True, blank=True)
     
     # Valuation Data
     valuation_type = models.CharField(max_length=10, choices=VALUATION_TYPES)
@@ -21,7 +21,7 @@ class Valuation(models.Model):
     
     # Market Context
     market_conditions = models.JSONField()  # Stores key metrics snapshot
-    comparable_properties = models.ManyToManyField('Property', blank=True)
+    comparable_properties = models.ManyToManyField('property.Property', blank=True)
     
     # Metadata
     notes = models.TextField(blank=True)
@@ -71,7 +71,7 @@ class MarketTrend(models.Model):
     
 class PriceHistory(models.Model):
     # Core Relationships
-    property = models.ForeignKey('Property', on_delete=models.CASCADE, related_name='price_history')
+    property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='price_history')
     
     # Price Data
     date_recorded = models.DateField()
