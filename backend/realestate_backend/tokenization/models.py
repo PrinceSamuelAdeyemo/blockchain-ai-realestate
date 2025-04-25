@@ -10,7 +10,7 @@ class TokenizedAsset(models.Model):
     
     # Property Linkage
     property = models.OneToOneField(
-        'Property', 
+        'property.Property', 
         on_delete=models.PROTECT,
         related_name='tokenized_asset'
     )
@@ -43,7 +43,7 @@ class TokenizedAsset(models.Model):
 class TokenOwnership(models.Model):
     # Ownership Relationships
     owner = models.ForeignKey(
-        'UserProfile',
+        'core.UserProfile',
         on_delete=models.CASCADE,
         related_name='token_holdings'
     )
