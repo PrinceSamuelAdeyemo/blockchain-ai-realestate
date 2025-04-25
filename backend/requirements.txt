@@ -7,3 +7,8 @@ djangorestframework==3.16.0
 django-cors-headers==4.7.0
 python-decouple==3.8
 djangorestframework-simplejwt==5.5.0
+Pillow==11.2.1
+
+
+#Blockchain
+web3==7.10.0
