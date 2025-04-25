@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'governance',
     'legal',
     'markets_valuation',
+    'property',
     'smartcontract',
     'tokenization',
     'transactions'
