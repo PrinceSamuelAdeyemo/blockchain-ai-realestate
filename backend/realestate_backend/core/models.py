@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin  
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin 
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -198,7 +200,7 @@ class InvestorProfile(models.Model):
     risk_tolerance = models.CharField(max_length=10, choices=RISK_LEVELS)
     investment_goals = models.TextField(blank=True)
     preferred_property_types = models.ManyToManyField(
-        'PropertyType',
+        'property.PropertyType',
         blank=True
     )
     
