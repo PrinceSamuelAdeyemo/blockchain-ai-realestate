@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class ModelVersion(models.Model):
@@ -72,8 +74,8 @@ class ModelVersion(models.Model):
 class Prediction(models.Model):
     # Core Relationships
     model_version = models.ForeignKey('ModelVersion', on_delete=models.PROTECT)
-    property = models.ForeignKey('Property', on_delete=models.CASCADE, null=True, blank=True)
-    market = models.ForeignKey('MarketTrend', on_delete=models.CASCADE, null=True, blank=True)
+    property = models.ForeignKey('property.Property', on_delete=models.CASCADE, null=True, blank=True)
+    market = models.ForeignKey('markets_valuation.MarketTrend', on_delete=models.CASCADE, null=True, blank=True)
     
     # Prediction Data
     input_data = models.JSONField()  # Features used
