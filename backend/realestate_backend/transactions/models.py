@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class Investment(models.Model):
@@ -16,8 +18,8 @@ class Investment(models.Model):
     )
 
     # Core Relationships
-    investor = models.ForeignKey('UserProfile', on_delete=models.PROTECT, related_name='investments')
-    asset = models.ForeignKey('TokenizedAsset', on_delete=models.PROTECT, related_name='investments')
+    investor = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT, related_name='investments')
+    asset = models.ForeignKey('tokenization.TokenizedAsset', on_delete=models.PROTECT, related_name='investments')
     
     # Investment Terms
     investment_type = models.CharField(max_length=10, choices=INVESTMENT_TYPES)
@@ -48,7 +50,7 @@ class Investment(models.Model):
 class DividendPayout(models.Model):
     # Core Relationships
     investment = models.ForeignKey('Investment', on_delete=models.PROTECT, related_name='dividends')
-    asset = models.ForeignKey('TokenizedAsset', on_delete=models.PROTECT)
+    asset = models.ForeignKey('tokenization.TokenizedAsset', on_delete=models.PROTECT)
     
     # Payout Details
     amount = models.DecimalField(max_digits=12, decimal_places=2)  # USD
@@ -96,8 +98,8 @@ class Transaction(models.Model):
     currency = models.CharField(max_length=3, default='USD')
     
     # Parties
-    from_user = models.ForeignKey('UserProfile', on_delete=models.PROTECT, related_name='outgoing_transactions', null=True, blank=True)
-    to_user = models.ForeignKey('UserProfile', on_delete=models.PROTECT, related_name='incoming_transactions', null=True, blank=True)
+    from_user = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT, related_name='outgoing_transactions', null=True, blank=True)
+    to_user = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT, related_name='incoming_transactions', null=True, blank=True)
     
     # Timestamps
     initiated_at = models.DateTimeField(auto_now_add=True)
@@ -105,7 +107,7 @@ class Transaction(models.Model):
     
     # References
     reference_id = models.CharField(max_length=100, blank=True)  # External ID
-    related_asset = models.ForeignKey('TokenizedAsset', on_delete=models.SET_NULL, null=True, blank=True)
+    related_asset = models.ForeignKey('tokenization.TokenizedAsset', on_delete=models.SET_NULL, null=True, blank=True)
     
     # Blockchain Data
     blockchain_tx_hash = models.CharField(max_length=66, blank=True)
@@ -143,8 +145,8 @@ class Escrow(models.Model):
     currency = models.CharField(max_length=3, default='USD')
     
     # Parties
-    depositor = models.ForeignKey('UserProfile', on_delete=models.PROTECT, related_name='escrow_deposits')
-    beneficiary = models.ForeignKey('UserProfile', on_delete=models.PROTECT, related_name='escrow_benefits', null=True, blank=True)
+    depositor = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT, related_name='escrow_deposits')
+    beneficiary = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT, related_name='escrow_benefits', null=True, blank=True)
     
     # Terms
     release_conditions = models.TextField()
