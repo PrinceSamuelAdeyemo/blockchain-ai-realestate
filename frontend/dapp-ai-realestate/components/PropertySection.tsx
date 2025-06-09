@@ -9,10 +9,11 @@ const PropertySection: React.FC<PropertySectionProps> = ({ title, properties }) 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 md:gap-5">
         {properties.map((property, index) => (
           <PropertyCard 
-            key={index} 
-            image={property.image} 
-            title={property.title} 
-            price={property.price} 
+            key={index}
+            image={property.image}
+            title={property.title}
+            price={property.price}
+            propertyId={property.propertyId}
           />
         ))}
       </div>
