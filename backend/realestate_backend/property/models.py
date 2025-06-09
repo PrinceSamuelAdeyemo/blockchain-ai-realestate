@@ -1,6 +1,9 @@
 from django.db import models
+import uuid
+from core.models import CustomUser
 
 # Create your models here.
+User = CustomUser()
 class Property(models.Model):
     PROPERTY_STATUS = (
         ('DRAFT', 'Draft'),
@@ -8,11 +11,18 @@ class Property(models.Model):
         ('SOLD', 'Sold'),
         ('MAINTENANCE', 'Under Maintenance')
     )
+    PROPERTY_PURCHASE_TYPES = (
+        ('SINGLE', 'single'),
+        ('CROWDFUND', 'crowdfund'),
+        ('ANY', 'any')
+    )
     
     # Core Identification
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
-    reference_id = models.CharField(max_length=20, unique=True)  # Internal ID
+    reference_id = models.UUIDField(default=uuid.uuid4, editable=False, blank = True)
+    owners = models.ManyToManyField(User, related_name='properties')  # Many-to-many relationship with users
+    #reference_id = models.CharField(max_length=20, unique=True, blank=True, null=True)  # Internal ID
     
     # Location
     address = models.TextField()
@@ -26,8 +36,11 @@ class Property(models.Model):
     # Characteristics
     property_type = models.ForeignKey('PropertyType', on_delete=models.PROTECT)
     amenities = models.ManyToManyField('Amenity', blank=True)
-    floor_area = models.DecimalField(max_digits=10, decimal_places=2)  # sqft/m²
-    plot_size = models.DecimalField(max_digits=10, decimal_places=2)  # acres/hectares
+    total_area = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # sqft/m²
+    usable_area = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # sqft/m²
+    total_floors = models.PositiveIntegerField(null=True)  # For buildings
+    floor_number = models.PositiveIntegerField(null=True)  # For apartments
+    plot_size = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # acres/hectares
     bedrooms = models.PositiveIntegerField()
     bathrooms = models.PositiveIntegerField()
     year_built = models.PositiveIntegerField()
@@ -35,8 +48,15 @@ class Property(models.Model):
     
     # Financial
     base_value = models.DecimalField(max_digits=15, decimal_places=2)  # Valuation in USD
+    price_per_sqm = models.DecimalField(max_digits=10, decimal_places=2)  # Price per square meter
+    rental_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # Monthly rent
     current_rent = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    purchase_type = models.CharField(max_length=9, choices=PROPERTY_PURCHASE_TYPES, default='ANY', blank=True, null=True)  # single or crowdfund
+    is_available_for_rent = models.BooleanField(default=False)  # For rental properties
     
+    # Blockchain related
+    blockchain_tx_hash = models.CharField(max_length=66, blank=True, null=True)
+
     # Status
     status = models.CharField(max_length=20, choices=PROPERTY_STATUS, default='DRAFT')
     is_featured = models.BooleanField(default=False)
@@ -127,3 +147,4 @@ class PropertyDocument(models.Model):
     
     def __str__(self):
         return f"{self.property.title} - {self.get_document_type_display()}"
+    
