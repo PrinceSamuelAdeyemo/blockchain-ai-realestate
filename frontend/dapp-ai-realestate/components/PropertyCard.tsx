@@ -1,8 +1,23 @@
+"use client"
+
 import React from 'react';
 import Image from 'next/image';
 import { PropertyProps } from '../types';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-const PropertyCard: React.FC<PropertyProps> = ({ image, title, price }) => {
+const PropertyCard: React.FC<PropertyProps> = ({ image, title, price, propertyId }) => {
+  const router = useRouter();
+
+  const openPropertyDetails = (propertyId: number) => {
+    router.push(`/property/${propertyId}`);
+  }
+  const addToCart = () => {
+    // Logic to add the property to the cart
+    console.log(`Property ${propertyId} added to cart`);
+  };
+
+
   return (
     <div className="text-center">
       <div className=" bg-gray-100 p-2 hover:shadow-md transition-shadow duration-300">
@@ -16,16 +31,28 @@ const PropertyCard: React.FC<PropertyProps> = ({ image, title, price }) => {
         </div>
         <p className="font-bold mt-2">{title}</p>
         <p className="font-bold">{price}</p>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded flex items-center justify-center mx-auto transition-colors duration-300">
-          <Image 
-            className="w-4 h-4 mr-1 bg-white text-white" 
-            src="/icons/images - 2022-09-10T130706.541_1.jpeg" 
-            alt="cart" 
-            width={16} 
-            height={16} 
-          />
-          ADD TO CART
-        </button>
+        <div className="flex justify-center items-center mt-2">
+          <button className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-2 rounded flex items-center justify-center mx-auto transition-colors duration-300">
+            <Image 
+              className="w-4 h-4 mr-1 bg-white text-white" 
+              src="/icons/images - 2022-09-10T130706.541_1.jpeg" 
+              alt="cart" 
+              width={16} 
+              height={16} 
+            />
+            ADD TO CART
+          </button>
+          <button onClick={() => openPropertyDetails(1)} className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-2 rounded flex items-center justify-center mx-auto transition-colors duration-300">
+            <Image 
+              className="w-4 h-4 mr-1 bg-white text-white" 
+              src="/icons/images - 2022-09-10T130706.541_1.jpeg" 
+              alt="cart" 
+              width={16} 
+              height={16} 
+            />
+            VIEW  DETAILS
+          </button>
+        </div>
       </div>
     </div>
   );
