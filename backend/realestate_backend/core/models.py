@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin 
 from django.conf import settings
@@ -9,10 +10,13 @@ class CustomUserManager(BaseUserManager):
         if not email and not password:
             raise ValueError('The given email and password must be set')
         
+        #if email:
         email = self.normalize_email(email)
+        #extra_fields["email"] = email
         user = self.model(email=email, **extra_fields)
             
         if wallet_address and blockchain:
+            #user = self.model(wallet_address=wallet_address, **extra_fields)
             user.wallet_address = wallet_address
             user.blockchain = blockchain
             
@@ -27,13 +31,14 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(email = email, password = password, **extra_fields)
     
     
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True)
-    blockchain = models.CharField(max_length=15)
-    wallet_address = models.CharField(max_length=24)
+    email = models.EmailField(unique=True)#, blank=True, null=True)
+    blockchain = models.CharField(max_length=15, blank=True, null=True)
+    wallet_address = models.CharField(max_length=42, blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -43,12 +48,25 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return self.email
-    
+        return self.email or f"User {self.id}"
+
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['wallet_address', 'blockchain'], name='unique_blockchain_wallet_address')
+            models.UniqueConstraint(fields=['wallet_address', 'blockchain', 'email'], name='unique_blockchain_wallet_address_email')
         ]
+
+
+class Web3Session(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    session_key = models.CharField(max_length=40)
+    address = models.CharField(max_length=42)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_activity = models.DateTimeField(auto_now=True)
+    ip_address = models.GenericIPAddressField()
+    user_agent = models.TextField()
+    
+    class Meta:
+        unique_together = [('user', 'session_key')]
         
 
 class UserProfile(models.Model):
