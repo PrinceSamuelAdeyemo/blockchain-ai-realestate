@@ -1,0 +1,118 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract PropertyCrowdfund {
+    enum OwnershipType { SINGLE, CROWDFUND }
+
+    struct Property {
+        uint id;
+        OwnershipType ownershipType;
+        address currentOwner;
+        uint price;
+    }
+
+    uint public nextPropertyId;
+    address public admin;
+    mapping(uint => Property) public properties;
+    mapping(uint => mapping(address => uint)) public shares; // propertyId => investor => share (out of 10000)
+
+    event PropertyListed(uint indexed propertyId, address indexed owner, uint price);
+    event TransferredToSingleBuyer(uint indexed propertyId, address indexed buyer);
+    event Fractionalized(uint indexed propertyId, address[] investors, uint[] amounts);
+    event BoughtFromMultiple(uint indexed propertyId, address indexed buyer);
+    event SharesRedistributed(uint indexed propertyId, address[] investors, uint[] newAmounts);
+    event PaymentReceived(address indexed from, uint amount);
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Only admin");
+        _;
+    }
+
+    constructor() {
+        admin = msg.sender;
+    }
+
+    function listProperty(uint price) external returns (uint) {
+        uint propertyId = nextPropertyId++;
+        properties[propertyId] = Property({
+            id: propertyId,
+            ownershipType: OwnershipType.SINGLE,
+            currentOwner: msg.sender,
+            price: price
+        });
+
+        shares[propertyId][msg.sender] = 10000;
+        emit PropertyListed(propertyId, msg.sender, price);
+        return propertyId;
+    }
+
+    function transferToSingleBuyer(uint propertyId, address newOwner) external payable {
+        Property storage prop = properties[propertyId];
+        require(prop.ownershipType == OwnershipType.SINGLE, "Not single-owned");
+        require(shares[propertyId][msg.sender] == 10000, "Only full owner");
+        require(msg.value >= prop.price, "Insufficient payment");
+
+        shares[propertyId][msg.sender] = 0;
+        shares[propertyId][newOwner] = 10000;
+        prop.currentOwner = newOwner;
+
+        payable(msg.sender).transfer(msg.value);
+        emit TransferredToSingleBuyer(propertyId, newOwner);
+    }
+
+    function fractionalize(uint propertyId, address[] memory investors, uint[] memory amounts) external {
+        Property storage prop = properties[propertyId];
+        require(prop.ownershipType == OwnershipType.SINGLE, "Not single-owned");
+        require(shares[propertyId][msg.sender] == 10000, "Only full owner can fractionalize");
+
+        shares[propertyId][msg.sender] = 0;
+        uint total = 0;
+        for (uint i = 0; i < investors.length; i++) {
+            shares[propertyId][investors[i]] = amounts[i];
+            total += amounts[i];
+        }
+        require(total == 10000, "Total must be 10000");
+
+        prop.ownershipType = OwnershipType.CROWDFUND;
+        prop.currentOwner = address(0);
+
+        emit Fractionalized(propertyId, investors, amounts);
+    }
+
+    function buyFromMultiple(uint propertyId, address[] memory fromOwners) external payable {
+        Property storage prop = properties[propertyId];
+        require(prop.ownershipType == OwnershipType.CROWDFUND, "Not crowdfunded");
+
+        for (uint i = 0; i < fromOwners.length; i++) {
+            uint ownerShare = shares[propertyId][fromOwners[i]];
+            require(ownerShare > 0, "Not an owner");
+            uint payout = (msg.value * ownerShare) / 10000;
+            payable(fromOwners[i]).transfer(payout);
+            shares[propertyId][fromOwners[i]] = 0;
+        }
+
+        shares[propertyId][msg.sender] = 10000;
+        prop.ownershipType = OwnershipType.SINGLE;
+        prop.currentOwner = msg.sender;
+
+        emit BoughtFromMultiple(propertyId, msg.sender);
+    }
+
+    function redistributeShares(uint propertyId, address[] memory newInvestors, uint[] memory newAmounts) external onlyAdmin {
+        Property storage prop = properties[propertyId];
+        require(prop.ownershipType == OwnershipType.CROWDFUND, "Not crowdfunded");
+
+        uint total = 0;
+        for (uint i = 0; i < newInvestors.length; i++) {
+            shares[propertyId][newInvestors[i]] = newAmounts[i];
+            total += newAmounts[i];
+        }
+        require(total == 10000, "Total must be 10000");
+
+        emit SharesRedistributed(propertyId, newInvestors, newAmounts);
+    }
+
+    receive() external payable {
+        emit PaymentReceived(msg.sender, msg.value);
+    }
+}
