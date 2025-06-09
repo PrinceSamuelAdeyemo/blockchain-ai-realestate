@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,12 +34,22 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+
+    # Needed auth apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'django_extensions',
+
     # Apps
     'core',
     'ai_integration',
@@ -46,14 +57,48 @@ INSTALLED_APPS = [
     'legal',
     'markets_valuation',
     'property',
+    'property_management',
     'smartcontract',
     'tokenization',
-    'transactions'
+    'transactions',
+    
+    # External Libraries
+    'corsheaders',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
+    'allauth.socialaccount.providers.google',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    # All auth
+    'allauth.account.auth_backends.AuthenticationBackend',
+    # Custom
+    'core.auth_backends.EmailBackend',
+    'core.auth_backends.Web3Backend',
+    # Default
+    'django.contrib.auth.backends.ModelBackend',
+    ]
+
+# AllAuth Settings
+SITE_ID = 1
+#ACCOUNT_EMAIL_REQUIRED = False  # Disable email for Web3 users
+ACCOUNT_SIGNUP_FIELDS = [
+    'email',
+    #'username'
+    ]
+# ACCOUNT_USERNAME_REQUIRED = True
+# ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_ADAPTER = 'core.adapters.CustomAccountAdapter'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'http://localhost:3000/login'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'http://localhost:3000'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'core.middleware.Web3SessionMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -62,6 +107,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'realestate_backend.urls'
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Frontend URL
+]
+CORS_ALLOWS_CREDENTIALS = True
 
 TEMPLATES = [
     {
@@ -92,6 +141,9 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = "core.CustomUser"
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -133,3 +185,62 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+#############  REST FRAMEWORK SETTINGS  #######################
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes = 30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days = 3),
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Real Estate API',
+    'DESCRIPTION': 'Real Estate API for managing properties, transactions, and more.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    
+    'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# ALL AUTH SETTINGS
+SOCIALACCOUNT_PROVIDERS = {
+  "google": {
+      "EMAIL_AUTHENTICATION": True,
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        "APPS": [
+            {
+                "client_id": config("CLIENT_ID"),
+                "secret": config("CLIENT_SECRET"),
+                "key": ""
+            },
+        ],
+        # These are provider-specific settings that can only be
+        # listed here:
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+        "OAUTH_PKCE_ENABLED": True,
+        "FETCH_USERINFO": True,
+    }
+}
+
+SOCIALACCOUNT_STORE_TOKENS = True
