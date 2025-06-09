@@ -1,4 +1,6 @@
-import type { Metadata } from "next";
+"use client";
+
+/* import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -28,6 +30,48 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+      </body>
+    </html>
+  );
+}
+ */
+
+
+
+import { Web3AuthProvider } from '@/providers/Web3AuthProvider';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { usePathname } from 'next/navigation';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
+/* 
+export const metadata: Metadata = {
+  title: 'Homes & Props',
+  description: 'Your app description',
+};
+ */
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const needsWallet = pathname.startsWith('/wallet') || pathname.startsWith('/buy');
+  console.log('needsWallet:', needsWallet);
+  console.log('google client id', process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!)
+
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+          {needsWallet ? (
+            <Web3AuthProvider>{children}</Web3AuthProvider>
+          ) : (
+            children
+          )}
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
