@@ -22,10 +22,10 @@ class PropertyDocumentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PropertySerializer(serializers.ModelSerializer):
-    property_type = PropertyTypeSerializer(read_only=True)
-    amenities = AmenitySerializer(many=True, read_only=True)
-    images = PropertyImageSerializer(many=True, read_only=True)
-    documents = PropertyDocumentSerializer(many=True, read_only=True)
+    #property_type = PropertyTypeSerializer(read_only=True)
+    #amenities = AmenitySerializer(many=True, read_only=True)
+    #images = PropertyImageSerializer(many=True, read_only=True)
+    #documents = PropertyDocumentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Property
