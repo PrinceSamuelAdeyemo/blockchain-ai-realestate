@@ -28,6 +28,7 @@ from core.models import CustomUser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
 from ai_integration.train_and_register_model import load_model_and_predict
 
 
@@ -66,193 +67,6 @@ class PropertyDocumentViewSet(viewsets.ModelViewSet):
 class PropertyViewSet(viewsets.ModelViewSet):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
-
-    """ 
-    def create(self, request, *args, **kwargs):
-        # 1. Save property to DB
-        response = super().create(request, *args, **kwargs)
-        property_instance = self.get_object()  # or Property.objects.get(pk=response.data['id'])
-
-        # 2. Register property on blockchain
-        try:
-            # Connect to Ganache
-            w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
-            # Load contract ABI and address
-            folders = ['decentralized_ai_realestate', 'blockchain', 'artifacts', 'contracts', 'PropertyCrowdfund.sol']
-            
-            with open(os.path.join(*folder, 'PropertyCrowdfund.json')) as f:
-                contract_json = json.load(f)
-            contract_abi = contract_json["abi"]
-            contract_address = config("PROPERTYCROWDFUND_CONTRACTADDRESS")
-            contract = w3.eth.contract(address=contract_address, abi=contract_abi)
-
-            # Prepare transaction (example: listProperty)
-            tx_hash = contract.functions.listProperty(
-                int(property_instance.price),  # or whatever args your contract needs
-            ).transact({'from': w3.eth.accounts[0]})
-
-            tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-            # You may want to extract propertyId or event info from tx_receipt
-
-            # 3. Save blockchain reference
-            property_instance.blockchain_tx_hash = tx_hash.hex()
-            property_instance.save()
-
-            return Response({"message": "Property saved to both backend and blockchain"}, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            # Optionally handle blockchain failure
-            print("Blockchain registration failed:", e)
-
-        return response
-    """
-    
-
-    """
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-
-        property_instance = serializer.instance  # ✅ This is the created instance
-        owner = property_instance.owners.first()  # Assuming the first owner is the one who created the property
-        # Prepare data for blockchain registration
-        owner_wallet_address = owner.wallet_address if owner else None
-        property_id = property_instance.reference_id
-
-
-        # Register property on blockchain
-        try:
-            # Connect to Ganache
-            print("Connecting to Ganache...")
-            w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
-
-            # Load contract ABI and address
-            # P:\decentralized_ai_realestate\blockchain\artifacts\contracts\PropertyCrowfund.sol\PropertyCrowdfund.json
-            print("Loading contract")
-            folder = ['P:\\', 'decentralized_ai_realestate', 'blockchain', 'artifacts', 'contracts', 'PropertyCrowdfund.sol', 'PropertyCrowdfund.json']
-            with open(os.path.join(*folder)) as f:
-                contract_json = json.load(f)
-
-
-            print("Getting contract ABI and address")
-            contract_abi = contract_json["abi"]
-            contract_address = config("PROPERTYCROWDFUND_CONTRACTADDRESS")
-
-            print("Instantiating contract")
-            contract = w3.eth.contract(address=contract_address, abi=contract_abi)
-
-            print("Converting price to wei")
-            price_in_wei = w3.to_wei(property_instance.base_value/2700, 'ether')  # Convert to wei if needed
-
-            # Call the smart contract's listProperty function
-            "" tx_hash = contract.functions.listProperty(
-                int(property_instance.base_value)
-            ).transact({'from': w3.eth.accounts[0]})
-
-            tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash) ""
-
-            # The owner is the buyer and seller in this instance.
-            print("Buyer and seller is the owner here")
-            buyer, seller = owner_wallet_address, owner_wallet_address
-            print("Sending transaction")
-            tx_hash = contract.functions.transferToSingleBuyer(property_id, buyer).transact({
-                'from': seller,
-                'value': price_in_wei
-            })
-            print(tx_hash)
-            print("Waiting for receipt")
-            tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-            print(tx_receipt)
-            # Save the blockchain hash to the property
-
-            print("Saving blockchain tx to hash")
-            property_instance.blockchain_tx_hash = tx_hash.hex()
-            property_instance.save()
-
-            return Response({"message": "Property saved to both backend and blockchain"}, status=status.HTTP_201_CREATED)
-
-        except Exception as e:
-            print("Blockchain registration failed:", e)
-
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    """
-
-    """
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-
-        property_instance = serializer.instance
-        owner = property_instance.owners.first()  # Assuming at least one owner
-        owner_wallet_address = owner.wallet_address if owner else None
-
-        try:
-            # Connect to Ganache
-            w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
-            if not w3.is_connected():
-                raise Exception("Web3 is not connected to Ganache")
-
-            # Load contract ABI and address
-            contract_path = ['P:\\', 'decentralized_ai_realestate', 'blockchain', 'artifacts', 'contracts', 'PropertyCrowdfund.sol', 'PropertyCrowdfund.json']
-            with open(os.path.join(*contract_path)) as f:
-                contract_json = json.load(f)
-
-            contract_abi = contract_json["abi"]
-            contract_address = config("PROPERTYCROWDFUND_CONTRACTADDRESS")
-
-            contract = w3.eth.contract(address=contract_address, abi=contract_abi)
-
-            
-
-            # Convert price to Wei (assuming ETH value)
-            print("Price instance  = ", property_instance.base_value)
-            print("divided by 2700", property_instance.base_value/2700)
-            price_in_wei = w3.to_wei(property_instance.base_value / 2700, 'ether')
-            print("Price in wei", price_in_wei)
-            # Set the sender account
-            sender = owner_wallet_address or w3.eth.accounts[0]
-            print(sender)
-            balance = w3.eth.get_balance(sender)
-            print(f"Seller Wallet Address 1: {sender}")
-            print(f"Seller Balance 1: {w3.from_wei(balance, 'ether')} ETH")
-
-            bal2 = w3.eth.get_balance(w3.eth.accounts[7])
-            print(w3.eth.accounts[7])
-            print("From another wallet", w3.from_wei(bal2, 'ether'))
-            
-            balance = w3.eth.get_balance(sender)
-            print(f"Seller Wallet Address 2: {sender}")
-            print(f"Seller Balance 2: {w3.from_wei(balance, 'ether')} ETH")
-            # Build and send the transaction
-            tx_hash = contract.functions.listProperty(int(price_in_wei)).transact({'from': sender})
-            tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-
-            # Get propertyId (from event or return value)
-            # Easiest: capture from logs if your contract emits event
-            logs = contract.events.PropertyListed().process_receipt(tx_receipt)
-            if logs:
-                blockchain_property_id = logs[0]['args']['propertyId']
-            else:
-                blockchain_property_id = None  # Or handle differently if no event
-
-            # Save on-chain tx hash and optional propertyId
-            property_instance.blockchain_tx_hash = tx_hash.hex()
-            if blockchain_property_id:
-                property_instance.blockchain_property_id = blockchain_property_id
-            property_instance.save()
-
-            return Response({"message": "Property saved to backend and blockchain"}, status=status.HTTP_201_CREATED)
-
-        except Exception as e:
-            print("Blockchain registration failed:", e)
-
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    """
 
     
     def create(self, request, *args, **kwargs):
@@ -364,6 +178,128 @@ class PropertyViewSet(viewsets.ModelViewSet):
             data['prediction_error'] = str(e)
 
         return Response(data)
+
+
+    @action(detail=True, methods=['post'], url_path='buy')
+    def buy_property(self, request, pk=None):
+        """
+        Buy a property (single buyer).
+        Expects: { "buyer_wallet": "0x...", "price": ... }
+        """
+        property_instance = self.get_object()
+        buyer_wallet = request.data.get("buyer_wallet")
+        price = request.data.get("price")  # in ETH
+
+        if not buyer_wallet or not price:
+            return Response({"error": "buyer_wallet and price required"}, status=400)
+
+        # Blockchain interaction
+        try:
+            w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
+            contract_path = [
+                'P:\\', 'decentralized_ai_realestate', 'blockchain',
+                'artifacts', 'contracts', 'PropertyCrowdfund.sol', 'PropertyCrowdfund.json'
+            ]
+            with open(os.path.join(*contract_path)) as f:
+                contract_json = json.load(f)
+            contract_abi = contract_json["abi"]
+            contract_address = config("PROPERTYCROWDFUND_CONTRACTADDRESS")
+            contract = w3.eth.contract(address=contract_address, abi=contract_abi)
+
+            # Get blockchain propertyId
+            blockchain_property_id = property_instance.blockchain_property_id
+            price_in_wei = w3.toWei(price, 'ether')
+
+            # Assume seller is the current owner wallet
+            seller_wallet = property_instance.owners.first().wallet_address
+            if not seller_wallet:
+                return Response({"error": "Property has no owner"}, status=400)
+            
+            tx_hash = contract.functions.transferToSingleBuyer(
+                int(blockchain_property_id), buyer_wallet
+            ).transact({'from': seller_wallet, 'value': price_in_wei})
+
+            tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+            # Update backend owner
+            buyer_user = UserProfile.objects.get(wallet_address=buyer_wallet)
+            property_instance.owners.clear()
+            property_instance.owners.add(buyer_user)
+            property_instance.save()
+
+            return Response({"message": "Property bought successfully", "tx_hash": tx_hash.hex()}, status=200)
+        
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+
+    @action(detail=True, methods=['post'], url_path='invest')
+    def invest_property(self, request, pk=None):
+        """
+        Invest in a property (crowdfund).
+        Expects: { "investor_wallet": "0x...", "amount": ... }
+        """
+        property_instance = self.get_object()
+        investor_wallet = request.data.get("investor_wallet")
+        amount = request.data.get("amount")  # in ETH
+
+        if not investor_wallet or not amount:
+            return Response({"error": "investor_wallet and amount required"}, status=400)
+
+        try:
+            w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
+            contract_path = [
+                'P:\\', 'decentralized_ai_realestate', 'blockchain',
+                'artifacts', 'contracts', 'PropertyCrowdfund.sol', 'PropertyCrowdfund.json'
+            ]
+            with open(os.path.join(*contract_path)) as f:
+                contract_json = json.load(f)
+            contract_abi = contract_json["abi"]
+            contract_address = config("PROPERTYCROWDFUND_CONTRACTADDRESS")
+            contract = w3.eth.contract(address=contract_address, abi=contract_abi)
+
+            blockchain_property_id = property_instance.blockchain_property_id
+            amount_in_wei = w3.toWei(amount, 'ether')
+
+            tx_hash = contract.functions.invest(int(blockchain_property_id)).transact({
+                'from': investor_wallet,
+                'value': amount_in_wei
+            })
+            tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+            return Response({"message": "Investment successful", "tx_hash": tx_hash.hex()}, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+    
+    @action(detail=True, methods=['get'], url_path='investors')
+    def get_investors(self, request, pk=None):
+        """
+        Get the list and count of investors for this property from the blockchain.
+        """
+        property_instance = self.get_object()
+        try:
+            w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
+            contract_path = [
+                'P:\\', 'decentralized_ai_realestate', 'blockchain',
+                'artifacts', 'contracts', 'PropertyCrowdfund.sol', 'PropertyCrowdfund.json'
+            ]
+            with open(os.path.join(*contract_path)) as f:
+                contract_json = json.load(f)
+            contract_abi = contract_json["abi"]
+            contract_address = config("PROPERTYCROWDFUND_CONTRACTADDRESS")
+            contract = w3.eth.contract(address=contract_address, abi=contract_abi)
+
+            blockchain_property_id = property_instance.blockchain_property_id
+            investors = contract.functions.getInvestors(int(blockchain_property_id)).call()
+            return Response({
+                "investors": investors,
+                "count": len(investors)
+            }, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+        
+    
 
 
 def sell_to_single_person(owner_id = None, owners_id: list = None, buyer = None, property_id = None, price = None, eth_price=None, contract = None):
