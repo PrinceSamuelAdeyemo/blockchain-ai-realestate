@@ -56,7 +56,7 @@ class Lease(models.Model):
 class Tenant(models.Model):
     # Core Relationships
     user_profile = models.OneToOneField(
-        'UserProfile',
+        'core.UserProfile',
         on_delete=models.CASCADE,
         related_name='tenant_profile',
         null=True,
@@ -130,8 +130,8 @@ class MaintenanceRequest(models.Model):
     completed_date = models.DateField(null=True, blank=True)
     
     # Media
-    before_photos = models.ManyToManyField('PropertyImage', blank=True, related_name='maintenance_before')
-    after_photos = models.ManyToManyField('PropertyImage', blank=True, related_name='maintenance_after')
+    before_photos = models.ManyToManyField('property.PropertyImage', blank=True, related_name='maintenance_before')
+    after_photos = models.ManyToManyField('property.PropertyImage', blank=True, related_name='maintenance_after')
     
     # Cost Tracking
     estimated_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -179,7 +179,7 @@ class Inspection(models.Model):
     )
     
     # Media Documentation
-    photos = models.ManyToManyField('PropertyImage', blank=True)
+    photos = models.ManyToManyField('property.PropertyImage', blank=True)
     report_document = models.FileField(upload_to='inspection_reports/', blank=True)
     
     # Follow-up
