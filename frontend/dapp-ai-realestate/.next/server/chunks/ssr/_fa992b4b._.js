@@ -346,9 +346,20 @@ __turbopack_context__.s({
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/image.js [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$api$2f$navigation$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/node_modules/next/dist/api/navigation.react-server.js [app-rsc] (ecmascript) <module evaluation>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$components$2f$navigation$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/components/navigation.react-server.js [app-rsc] (ecmascript)");
 ;
 ;
-const PropertyCard = ({ image, title, price })=>{
+;
+const PropertyCard = ({ image, title, price, propertyId })=>{
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$components$2f$navigation$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["useRouter"])();
+    const openPropertyDetails = (propertyId)=>{
+        router.push(`/property/${propertyId}`);
+    };
+    const addToCart = ()=>{
+        // Logic to add the property to the cart
+        console.log(`Property ${propertyId} added to cart`);
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "text-center",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -363,12 +374,12 @@ const PropertyCard = ({ image, title, price })=>{
                         fill: true
                     }, void 0, false, {
                         fileName: "[project]/components/PropertyCard.tsx",
-                        lineNumber: 10,
+                        lineNumber: 23,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/components/PropertyCard.tsx",
-                    lineNumber: 9,
+                    lineNumber: 22,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -376,7 +387,7 @@ const PropertyCard = ({ image, title, price })=>{
                     children: title
                 }, void 0, false, {
                     fileName: "[project]/components/PropertyCard.tsx",
-                    lineNumber: 17,
+                    lineNumber: 30,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -384,39 +395,70 @@ const PropertyCard = ({ image, title, price })=>{
                     children: price
                 }, void 0, false, {
                     fileName: "[project]/components/PropertyCard.tsx",
-                    lineNumber: 18,
+                    lineNumber: 31,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                    className: "bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded flex items-center justify-center mx-auto transition-colors duration-300",
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "flex justify-center items-center mt-2",
                     children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
-                            className: "w-4 h-4 mr-1 bg-white text-white",
-                            src: "/icons/images - 2022-09-10T130706.541_1.jpeg",
-                            alt: "cart",
-                            width: 16,
-                            height: 16
-                        }, void 0, false, {
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            onClick: ()=>openPropertyDetails(1),
+                            className: "bg-blue-500 hover:bg-blue-600 text-white py-3 px-2 rounded flex items-center justify-center mx-auto transition-colors duration-300",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
+                                    className: "w-4 h-4 mr-1 bg-white text-white",
+                                    src: "/icons/images - 2022-09-10T130706.541_1.jpeg",
+                                    alt: "cart",
+                                    width: 16,
+                                    height: 16
+                                }, void 0, false, {
+                                    fileName: "[project]/components/PropertyCard.tsx",
+                                    lineNumber: 34,
+                                    columnNumber: 13
+                                }, this),
+                                "ADD TO CART"
+                            ]
+                        }, void 0, true, {
                             fileName: "[project]/components/PropertyCard.tsx",
-                            lineNumber: 20,
+                            lineNumber: 33,
                             columnNumber: 11
                         }, this),
-                        "ADD TO CART"
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            className: "bg-blue-500 hover:bg-blue-600 text-white py-3 px-2 rounded flex items-center justify-center mx-auto transition-colors duration-300",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
+                                    className: "w-4 h-4 mr-1 bg-white text-white",
+                                    src: "/icons/images - 2022-09-10T130706.541_1.jpeg",
+                                    alt: "cart",
+                                    width: 16,
+                                    height: 16
+                                }, void 0, false, {
+                                    fileName: "[project]/components/PropertyCard.tsx",
+                                    lineNumber: 44,
+                                    columnNumber: 13
+                                }, this),
+                                "VIEW  DETAILS"
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/components/PropertyCard.tsx",
+                            lineNumber: 43,
+                            columnNumber: 11
+                        }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/PropertyCard.tsx",
-                    lineNumber: 19,
+                    lineNumber: 32,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/components/PropertyCard.tsx",
-            lineNumber: 8,
+            lineNumber: 21,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/PropertyCard.tsx",
-        lineNumber: 7,
+        lineNumber: 20,
         columnNumber: 5
     }, this);
 };
@@ -451,7 +493,8 @@ const PropertySection = ({ title, properties })=>{
                 children: properties.map((property, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$PropertyCard$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
                         image: property.image,
                         title: property.title,
-                        price: property.price
+                        price: property.price,
+                        propertyId: property.propertyId
                     }, index, false, {
                         fileName: "[project]/components/PropertySection.tsx",
                         lineNumber: 11,
@@ -495,66 +538,78 @@ function Home() {
         {
             image: "/images/the houses/download (1).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 1
         },
         {
             image: "/images/the houses/download (2).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 2
         },
         {
             image: "/images/the houses/download (3).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 3
         },
         {
             image: "/images/the houses/download (4).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 4
         }
     ];
     const corporateProperties = [
         {
             image: "/images/the houses/images (3).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 5
         },
         {
             image: "/images/the houses/images (1).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 6
         },
         {
             image: "/images/the houses/images (2).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 7
         },
         {
             image: "/images/the houses/images (4).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 8
         }
     ];
     const affordableProperties = [
         {
             image: "/images/the houses/download (5).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 9
         },
         {
             image: "/images/the houses/images (5).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 10
         },
         {
             image: "/images/the houses/images (7).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 11
         },
         {
             image: "/images/the houses/images (6).jfif",
             title: "A brown duplex",
-            price: "N5,700,000"
+            price: "N5,700,000",
+            propertyId: 12
         }
     ];
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Layout$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
