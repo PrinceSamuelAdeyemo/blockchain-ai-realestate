@@ -7,24 +7,24 @@ import { PropertyProps } from '../types';
 
 export default function Home() {
   const luxuryProperties: PropertyProps[] = [
-    { image: "/images/the houses/download (1).jfif", title: "A brown duplex", price: "N5,700,000" },
-    { image: "/images/the houses/download (2).jfif", title: "A brown duplex", price: "N5,700,000" },
-    { image: "/images/the houses/download (3).jfif", title: "A brown duplex", price: "N5,700,000" },
-    { image: "/images/the houses/download (4).jfif", title: "A brown duplex", price: "N5,700,000" }
+    { image: "/images/the houses/download (1).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 1},
+    { image: "/images/the houses/download (2).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 2},
+    { image: "/images/the houses/download (3).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 3},
+    { image: "/images/the houses/download (4).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 4},
   ];
 
   const corporateProperties: PropertyProps[] = [
-    { image: "/images/the houses/images (3).jfif", title: "A brown duplex", price: "N5,700,000" },
-    { image: "/images/the houses/images (1).jfif", title: "A brown duplex", price: "N5,700,000" },
-    { image: "/images/the houses/images (2).jfif", title: "A brown duplex", price: "N5,700,000" },
-    { image: "/images/the houses/images (4).jfif", title: "A brown duplex", price: "N5,700,000" }
+    { image: "/images/the houses/images (3).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 5 },
+    { image: "/images/the houses/images (1).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 6 },
+    { image: "/images/the houses/images (2).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 7 },
+    { image: "/images/the houses/images (4).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 8 }
   ];
 
   const affordableProperties: PropertyProps[] = [
-    { image: "/images/the houses/download (5).jfif", title: "A brown duplex", price: "N5,700,000" },
-    { image: "/images/the houses/images (5).jfif", title: "A brown duplex", price: "N5,700,000" },
-    { image: "/images/the houses/images (7).jfif", title: "A brown duplex", price: "N5,700,000" },
-    { image: "/images/the houses/images (6).jfif", title: "A brown duplex", price: "N5,700,000" }
+    { image: "/images/the houses/download (5).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 9 },
+    { image: "/images/the houses/images (5).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 10 },
+    { image: "/images/the houses/images (7).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 11 },
+    { image: "/images/the houses/images (6).jfif", title: "A brown duplex", price: "N5,700,000", propertyId: 12 }
   ];
 
   return (
