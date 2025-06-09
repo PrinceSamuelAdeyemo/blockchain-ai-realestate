@@ -5,10 +5,21 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../../components/Navbar';
+import GoogleLoginButton from '@/components/auth/GoogleLoginButton';
+
+//import { Web3ConnectButton } from '../../components/auth/Web3ConnectButton';
+//import { useWeb3Auth } from '@/providers/Web3AuthProvider';
+import { Button } from '@/components/ui/Button';
+
+import { apiUrl } from '@/utils/env';
+
 
 export default function SignUp() {
+  // const { account, authToken, isAuthenticated } = useWeb3Auth();
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
     email: '',
     phone: '',
     password: '',
@@ -23,11 +34,87 @@ export default function SignUp() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    
+    /* if (!account || !authToken) {
+      alert('Please connect your wallet before registering.');
+      return;
+    } */
+  
+    const fullData = {
+      ...formData,
+      //wallet_address: account,
+      // auth_token: authToken,
+    };
+
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    const isValidEmail = (email: string) => {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    };
+
+    if (!isValidEmail(formData.email)) {
+      alert('Please enter a valid email address!');
+      return;
+    }
+
+    const isValidPhone = (phone: string) => {
+      const re = /^\d{10}$/; // Adjust regex based on your phone number format
+      return re.test(phone);
+    };
+
+    if (!isValidPhone(formData.phone)) {
+      alert('Please enter a valid phone number!');
+      return;
+    }
+
+    /* const isValidPassword = (password: string) => {
+      const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // At least 8 characters, at least one letter and one number 
+      return re.test(password);
+    };
+
+    if (!isValidPassword(formData.password)) {
+      //alert('Password must be at least 8 characters long and contain at least one letter and one number!');
+      return;
+    } */
+
+    const signupResponse = await fetch(`${apiUrl}/core/api/v1/users/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(fullData),
+    });
+
+    console.log("Sent")
+    if (!signupResponse.ok) {
+      const errorData = await signupResponse.json();
+      alert(`Error: ${errorData.message || 'Failed to register'}`);
+      return;
+    }
+
+    const responseData = await signupResponse.json();
+    console.log(responseData)
+
+    if (signupResponse.status == 201) {
+      alert('Registration successful! Please check your email for verification.');
+      // Redirect to login page or perform any other action
+    } else {
+      alert(`Error: ${responseData || 'Failed to register'}`);
+    }
+
+  
+    console.log('Form submitted:', fullData);
+  
+    // TODO: Send fullData to backend
   };
+
+  //const handle_google = async () => {
+    //const googleResponse = await fetch(`${apiUrl}/core/api/v1/users/google/`, {
+      
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -65,13 +152,45 @@ export default function SignUp() {
                   
                   <div className="mb-4">
                     <div className="flex items-center">
-                      <label htmlFor="name" className="w-1/3 text-right pr-4">Name</label>
+                      <label htmlFor="firstName" className="w-1/3 text-right pr-4">First Name</label>
                       <div className="w-2/3">
                         <input
                           type="text"
-                          id="name"
+                          id="firstName"
                           className="w-full border-b border-gray-300 focus:border-blue-500 outline-none px-1 py-2"
-                          value={formData.name}
+                          value={formData.firstName}
+                          onChange={handleChange}
+                          autoFocus
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="flex items-center">
+                      <label htmlFor="middleName" className="w-1/3 text-right pr-4">Middle Name</label>
+                      <div className="w-2/3">
+                        <input
+                          type="text"
+                          id="middleName"
+                          className="w-full border-b border-gray-300 focus:border-blue-500 outline-none px-1 py-2"
+                          value={formData.middleName}
+                          onChange={handleChange}
+                          autoFocus
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="flex items-center">
+                      <label htmlFor="lastName" className="w-1/3 text-right pr-4">Last Name</label>
+                      <div className="w-2/3">
+                        <input
+                          type="text"
+                          id="lastName"
+                          className="w-full border-b border-gray-300 focus:border-blue-500 outline-none px-1 py-2"
+                          value={formData.lastName}
                           onChange={handleChange}
                           autoFocus
                         />
@@ -138,6 +257,18 @@ export default function SignUp() {
                       </div>
                     </div>
                   </div>
+
+                  
+
+                  {/* <div className="mb-6">
+                    <h2 className="text-lg font-medium mb-3">Connect Wallet</h2>
+                    <Web3ConnectButton />
+                    {isAuthenticated && (
+                      <p className="mt-2 text-sm text-green-600">
+                        Wallet connected successfully! Please complete your profile.
+                      </p>
+                    )}
+                  </div> */}
                   
                   <div className="flex justify-end mb-4">
                     <button
@@ -147,11 +278,15 @@ export default function SignUp() {
                       Register
                     </button>
                   </div>
+
+                  <div className="mb-6">
+                    <GoogleLoginButton />
+                  </div>
                   
                   <div className="text-center">
                     <p>
                       Already have an account?{' '}
-                      <Link href="/signin" className="text-blue-600 hover:text-blue-800">
+                      <Link href="/login" className="text-blue-600 hover:text-blue-800">
                         Sign In
                       </Link>
                     </p>
