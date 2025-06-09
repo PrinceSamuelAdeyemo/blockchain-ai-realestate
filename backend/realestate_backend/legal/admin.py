@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import ModelVersion, Prediction, TrainingData, FeatureSet
+from .models import RegulatoryCheck, TaxRecord, LegalDocument, ComplianceRule
 
 # Register your models here.
 admin.site.register([
-    ModelVersion,
-    Prediction,
-    TrainingData,
-    FeatureSet
+    RegulatoryCheck,
+    TaxRecord,
+    LegalDocument,
+    ComplianceRule,
 ])
