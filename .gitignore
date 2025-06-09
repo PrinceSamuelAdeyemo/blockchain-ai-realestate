@@ -15,3 +15,8 @@ frontend/dapp-ai/realestate/.next/static
 frontend/dapp-ai/realestate/.next/cache
 frontend/dapp-ai-realestate/.next/trace
 frontend/dapp-ai-realestate/.next/static/chunks/
+frontend/dapp-ai-realestate/.env.local
+
+# Blockchain
+blockchain/realestate/.env
+blockchain/realestate/.env.local
