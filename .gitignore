@@ -20,3 +20,4 @@ frontend/dapp-ai-realestate/.env.local
 # Blockchain
 blockchain/realestate/.env
 blockchain/realestate/.env.local
+blockchain/node_modules
