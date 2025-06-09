@@ -1,5 +1,11 @@
 #AI/ML
-
+numpy==2.2.5
+scipy==1.15.2
+xgboost==3.0.0
+joblib==1.4.2
+pandas==2.2.3
+scikit-learn==1.6.1
+hashlib
 
 #Backend
 django==5.2.0
@@ -8,7 +14,12 @@ django-cors-headers==4.7.0
 python-decouple==3.8
 djangorestframework-simplejwt==5.5.0
 Pillow==11.2.1
-
+drf-spectacular==0.28.0
+drf-spectacular[sidecar]
+django-allauth==65.7.0
+cryptography==44.0.3   # For allauth-social
 
 #Blockchain
 web3==7.10.0
+pycryptodome==3.22.0
+eth-account==0.13.6
