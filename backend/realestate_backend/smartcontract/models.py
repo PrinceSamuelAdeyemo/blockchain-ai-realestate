@@ -49,6 +49,8 @@ class Lease(models.Model):
 from web3 import Web3
 from django.db import transaction
 
+
+
 class ContractEvent(models.Model):
     # ... (existing fields) ...
     
@@ -118,43 +120,7 @@ class ContractEvent(models.Model):
             avg_cost=Avg('actual_cost')
         ).order_by('-priority_value')
         
-        
-class MaintenanceRequest(models.Model):
-    # ... (existing fields) ...
-    
-    @classmethod
-    def forecast_yearly_costs(cls, property_id):
-        from django.db.models import Sum
-        from statsmodels.tsa.arima.model import ARIMA
-        import pandas as pd
-        
-        # Get historical data
-        history = cls.objects.filter(
-            property_id=property_id,
-            completed_date__isnull=False
-        ).annotate(
-            month=TruncMonth('completed_date')
-        ).values('month').annotate(
-            total_cost=Sum('actual_cost')
-        ).order_by('month')
-        
-        # Convert to time series
-        df = pd.DataFrame(list(history))
-        df.set_index('month', inplace=True)
-        df = df.resample('M').asfreq().fillna(0)
-        
-        # ARIMA forecasting
-        model = ARIMA(df['total_cost'], order=(1,1,1))
-        results = model.fit()
-        forecast = results.forecast(steps=12)
-        
-        return {
-            'history': df.to_dict(),
-            'forecast': forecast.to_dict(),
-            'model_summary': str(results.summary())
-        }
-        
-        
+         
 class SmartContract(models.Model):
     # ... (existing fields) ...
     
@@ -209,7 +175,44 @@ class GasFeeRecord(models.Model):
             efficiency_ratio=Avg(F('gas_used') / F('gas_limit'))
         )
         
+"""   
+class MaintenanceRequest(models.Model):
+    # ... (existing fields) ...
+    
+    @classmethod
+    def forecast_yearly_costs(cls, property_id):
+        from django.db.models import Sum
+        from statsmodels.tsa.arima.model import ARIMA
+        import pandas as pd
         
+        # Get historical data
+        history = cls.objects.filter(
+            property_id=property_id,
+            completed_date__isnull=False
+        ).annotate(
+            month=TruncMonth('completed_date')
+        ).values('month').annotate(
+            total_cost=Sum('actual_cost')
+        ).order_by('month')
+        
+        # Convert to time series
+        df = pd.DataFrame(list(history))
+        df.set_index('month', inplace=True)
+        df = df.resample('M').asfreq().fillna(0)
+        
+        # ARIMA forecasting
+        model = ARIMA(df['total_cost'], order=(1,1,1))
+        results = model.fit()
+        forecast = results.forecast(steps=12)
+        
+        return {
+            'history': df.to_dict(),
+            'forecast': forecast.to_dict(),
+            'model_summary': str(results.summary())
+        }
+        
+    
+    
 class MaintenanceRequest(models.Model):
     # ... (existing fields) ...
     
@@ -245,3 +248,6 @@ class MaintenanceRequest(models.Model):
             'predicted_requests': dict(zip(future_months, model.predict_proba(X)[0])),
             'feature_importance': dict(zip(X.columns, model.feature_importances_))
         }
+        
+        
+"""
