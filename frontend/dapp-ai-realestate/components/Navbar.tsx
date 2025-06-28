@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const userDetails = localStorage.getItem("userDetails")
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -55,11 +55,26 @@ const Navbar: React.FC = () => {
                   <Image className="h-6 w-6" src="/icons/images - 2022-09-10T130814.085_1.jpeg" alt="Cart" width={24} height={24} />
                 </Link>
               </li>
+              {userDetails == null ? 
+              <div className='flex flex-row'>
+              <li className="px-2">
+                <Link href="/signup" className="block py-1">
+                  <button>Sign in</button>
+                </Link>
+              </li>
+              <li className="px-2 justify-center">
+                <Link href="/login" className="block py-1">
+                  <button className='bg-blue-500 text-white rounded px-4'>Login </button>
+                </Link>
+              </li>
+              </div>
+              : 
               <li className="px-2">
                 <Link href="/profile" className="block py-1">
                   <Image className="h-6 w-6" src="/icons/profile_1107841.png" alt="Profile" width={24} height={24} />
                 </Link>
-              </li>
+              </li>}
+              
             </ul>
           </div>
         </div>

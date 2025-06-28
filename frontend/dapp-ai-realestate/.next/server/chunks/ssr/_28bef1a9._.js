@@ -486,7 +486,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Footer$2e$tsx_
 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$chart$2e$js$2f$dist$2f$chart$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["Chart"].register(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$chart$2e$js$2f$dist$2f$chart$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["CategoryScale"], __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$chart$2e$js$2f$dist$2f$chart$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["LinearScale"], __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$chart$2e$js$2f$dist$2f$chart$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["PointElement"], __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$chart$2e$js$2f$dist$2f$chart$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["LineElement"], __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$chart$2e$js$2f$dist$2f$chart$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["Title"], __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$chart$2e$js$2f$dist$2f$chart$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["Tooltip"], __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$chart$2e$js$2f$dist$2f$chart$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["Legend"]);
 const PROPERTYCROWDFUND_CONTRACT_ADDRESS = process.env.PROPERTYFUNDCONTRACTADDRESS;
 const mockProperty = {
-    image: "/images/sample-house.jpg",
+    image: "/images/the houses/download (4).jfif",
     title: "Modern Family Home",
     description: "A beautiful 4-bedroom family home in a quiet neighborhood, close to schools and parks.",
     location: "123 Main St, Springfield",
@@ -563,7 +563,7 @@ function PropertyBuyPage() {
         async function fetchProperty() {
             setLoading(true);
             try {
-                const res = await fetch(`http://localhost:8000/property/api/v1/properties/1/`);
+                const res = await fetch(`http://localhost:8000/property/api/v1/properties/${propertyId}/`);
                 if (!res.ok) throw new Error("Failed to fetch property");
                 const data = await res.json();
                 console.log(data);
@@ -667,7 +667,7 @@ function PropertyBuyPage() {
                                     },
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                                            src: property.image,
+                                            src: mockProperty.image,
                                             alt: property.title,
                                             style: {
                                                 width: 350,
@@ -888,6 +888,23 @@ function PropertyBuyPage() {
                                                             fileName: "[project]/app/property/[propertyId]/page.tsx",
                                                             lineNumber: 195,
                                                             columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                                                    children: "Price (Base value): "
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/app/property/[propertyId]/page.tsx",
+                                                                    lineNumber: 196,
+                                                                    columnNumber: 23
+                                                                }, this),
+                                                                "$ ",
+                                                                property.base_value
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/app/property/[propertyId]/page.tsx",
+                                                            lineNumber: 196,
+                                                            columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
@@ -907,12 +924,12 @@ function PropertyBuyPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                                        lineNumber: 198,
+                                                        lineNumber: 200,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                                    lineNumber: 197,
+                                                    lineNumber: 199,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -935,37 +952,61 @@ function PropertyBuyPage() {
                                                                     }
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                                                    lineNumber: 205,
+                                                                    lineNumber: 207,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                                            lineNumber: 203,
+                                                            lineNumber: 205,
                                                             columnNumber: 19
                                                         }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                            onClick: handleInvest,
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             style: {
-                                                                padding: "6px 18px"
+                                                                margin: "16px 0",
+                                                                display: "flex",
+                                                                gap: "12px"
                                                             },
-                                                            children: "Buy/Crowdfund"
-                                                        }, void 0, false, {
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    onClick: ()=>window.location.href = `/property/${propertyId}/buy`,
+                                                                    style: {
+                                                                        padding: "6px 18px"
+                                                                    },
+                                                                    children: "Buy"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/app/property/[propertyId]/page.tsx",
+                                                                    lineNumber: 220,
+                                                                    columnNumber: 21
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    onClick: ()=>window.location.href = `/property/${propertyId}/crowdfund`,
+                                                                    style: {
+                                                                        padding: "6px 18px"
+                                                                    },
+                                                                    children: "Crowdfund"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/app/property/[propertyId]/page.tsx",
+                                                                    lineNumber: 226,
+                                                                    columnNumber: 21
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
                                                             fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                                            lineNumber: 214,
+                                                            lineNumber: 219,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                             children: txStatus
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                                            lineNumber: 217,
+                                                            lineNumber: 233,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                                    lineNumber: 202,
+                                                    lineNumber: 204,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
@@ -989,7 +1030,7 @@ function PropertyBuyPage() {
                                             children: "Price Prediction (AI Insights)"
                                         }, void 0, false, {
                                             fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                            lineNumber: 222,
+                                            lineNumber: 238,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -999,20 +1040,20 @@ function PropertyBuyPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                            lineNumber: 223,
+                                            lineNumber: 239,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$chartjs$2d$2$2f$dist$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Line"], {
                                             data: chartData
                                         }, void 0, false, {
                                             fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                            lineNumber: 224,
+                                            lineNumber: 240,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/property/[propertyId]/page.tsx",
-                                    lineNumber: 221,
+                                    lineNumber: 237,
                                     columnNumber: 13
                                 }, this)
                             ]
@@ -1024,7 +1065,7 @@ function PropertyBuyPage() {
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Footer$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                         fileName: "[project]/app/property/[propertyId]/page.tsx",
-                        lineNumber: 229,
+                        lineNumber: 245,
                         columnNumber: 7
                     }, this)
                 ]
