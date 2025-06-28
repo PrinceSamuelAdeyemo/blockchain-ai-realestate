@@ -24,7 +24,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const PROPERTYCROWDFUND_CONTRACT_ADDRESS = process.env.PROPERTYFUNDCONTRACTADDRESS;
 
 const mockProperty = {
-  image: "/images/sample-house.jpg",
+  image: "/images/the houses/download (4).jfif",
   title: "Modern Family Home",
   description: "A beautiful 4-bedroom family home in a quiet neighborhood, close to schools and parks.",
   location: "123 Main St, Springfield",
@@ -93,7 +93,7 @@ export default function PropertyBuyPage() {
     async function fetchProperty() {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:8000/property/api/v1/properties/1/`);
+        const res = await fetch(`http://localhost:8000/property/api/v1/properties/${propertyId}/`);
         if (!res.ok) throw new Error("Failed to fetch property");
         const data = await res.json();
         console.log(data)
@@ -174,7 +174,7 @@ export default function PropertyBuyPage() {
           <>
             <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
               <img
-                src={property.image}
+                src={mockProperty.image}
                 alt={property.title}
                 style={{ width: 350, height: 250, objectFit: "cover", borderRadius: 8 }}
               />
@@ -193,6 +193,8 @@ export default function PropertyBuyPage() {
                   <li><strong>Apartment Floor:</strong> {property.floor_number}</li>
                   <li><strong>Country Encoded:</strong> {property.country_encoded}</li>
                   <li><strong>Price per sqm:</strong>$ {property.price_per_sqm}</li>
+                  <li><strong>Price (Base value): </strong>$ {property.base_value}</li>
+
                 </ul>
                 <div style={{ margin: "16px 0" }}>
                   <strong>
@@ -211,9 +213,23 @@ export default function PropertyBuyPage() {
                       style={{ marginRight: 8 }}
                     />
                   </label>
-                  <button onClick={handleInvest} style={{ padding: "6px 18px" }}>
+                  {/* <button onClick={handleInvest} style={{ padding: "6px 18px" }}>
                     Buy/Crowdfund
-                  </button>
+                  </button> */}
+                  <div style={{ margin: "16px 0", display: "flex", gap: "12px" }}>
+                    <button
+                      onClick={() => window.location.href = `/property/${propertyId}/buy`}
+                      style={{ padding: "6px 18px" }}
+                    >
+                      Buy
+                    </button>
+                    <button
+                      onClick={() => window.location.href = `/property/${propertyId}/crowdfund`}
+                      style={{ padding: "6px 18px" }}
+                    >
+                      Crowdfund
+                    </button>
+                  </div>
                   <p>{txStatus}</p>
                 </div>
               </div>

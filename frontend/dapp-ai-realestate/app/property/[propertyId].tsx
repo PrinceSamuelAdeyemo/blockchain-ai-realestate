@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import Web3 from "web3";
-import propertyCrowdfundABI from "P:/decentralized_ai_realestate/blockchain/artifacts/contracts/PropertyCrowfund.sol/PropertyCrowdfund.json"; // Adjust path as needed
+import propertyCrowdfundABI from "P:/decentralized_ai_realestate/blockchain/artifacts/contracts/PropertyCrowdfund.sol/PropertyCrowdfund.json"; // Adjust path as needed
 
 
 const PROPERTYCROWDFUND_CONTRACT_ADDRESS = process.env.PROPERTYFUNDCONTRACTADDRESS
