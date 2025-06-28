@@ -13,7 +13,10 @@ const PropertySection: React.FC<PropertySectionProps> = ({ title, properties }) 
             image={property.image}
             title={property.title}
             price={property.price}
-            propertyId={property.propertyId}
+            id={property.id}
+            slug={property.slug}
+            base_value={property.base_value}
+            description={property.description}
           />
         ))}
       </div>
