@@ -31,6 +31,9 @@ from rest_framework import status
 from rest_framework.decorators import action
 from ai_integration.train_and_register_model import load_model_and_predict
 
+from drf_spectacular.utils import extend_schema
+
+
 
 class PropertyTypeViewSet(viewsets.ModelViewSet):
     """
@@ -70,6 +73,9 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
     
     def create(self, request, *args, **kwargs):
+        print(request.data)
+        request.data["owners"] = [request.data["owners"]]
+        print("ggg", request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -177,9 +183,14 @@ class PropertyViewSet(viewsets.ModelViewSet):
             data['price_prediction'] = None
             data['prediction_error'] = str(e)
 
+        if instance.owners.exists():
+            owner = instance.owners.first()
+            data['owner_wallet_address'] = owner.wallet_address
+
         return Response(data)
 
 
+    @extend_schema(description="Buy a property from the blockchain.")
     @action(detail=True, methods=['post'], url_path='buy')
     def buy_property(self, request, pk=None):
         """
@@ -232,7 +243,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 
-
+    @extend_schema(description="Invest in a property (crowdfund).")
     @action(detail=True, methods=['post'], url_path='invest')
     def invest_property(self, request, pk=None):
         """
@@ -271,6 +282,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
     
+    @extend_schema(description="Get investors")
     @action(detail=True, methods=['get'], url_path='investors')
     def get_investors(self, request, pk=None):
         """
@@ -588,10 +600,13 @@ def predict_price_from_dict(input_data):
         input_copy = input_data.copy()
         if input_copy.get('building_age') is not None:
             input_copy['building_age'] = input_copy['building_age'] + i
-
+            input_copy['price_per_sqm'] = float(input_copy['price_per_sqm']) * (1 + 0.02 * i)  # Example: 2% annual increase
+        
         # Convert to DataFrame for prediction
         df = pd.DataFrame([input_copy])
         price = model.predict(df)[0]
+        print(model.predict(df))
+        # Append the prediction
         predictions.append({"year": year, "price": float(price)})
 
     return predictions
