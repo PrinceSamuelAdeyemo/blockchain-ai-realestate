@@ -10,6 +10,7 @@ from .views import (
     google_login_callback,
     google_login,
     validate_google_token,
+    LoginView,
 )
 from .api import Web3LoginAPI, get_nonce, verify_signature
 from .session_api import Web3SessionCreateView, Web3SessionVerifyView
@@ -51,4 +52,8 @@ urlpatterns = [
 
 
     # path('api/auth/token/', include('rest_framework_simplejwt.urls')),
+
+    # Custom endpoints
+    path('api/login/', LoginView.as_view(), name='login'),
+    #path('api/logout/', views.LogoutView.as_view(), name='logout'),
 ]
