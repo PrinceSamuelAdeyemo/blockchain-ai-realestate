@@ -4,13 +4,15 @@ import requests
 from django.shortcuts import render
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate, login
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt    
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator    
 
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -27,13 +29,16 @@ from .serializers import (
 
 from allauth.account.utils import send_email_confirmation
 from allauth.account.adapter import get_adapter
-from allauth.account.models import EmailAddress as allauthEmailAddress
+from allauth.account.models import EmailAddress as allauthEmailAddress, EmailConfirmation, EmailConfirmationHMAC
 from allauth.account.utils import complete_signup
 from allauth.socialaccount.models import SocialAccount, SocialToken
 from allauth.socialaccount.helpers import complete_social_login
 from allauth.socialaccount.providers.google.provider import GoogleProvider
 
 from .models import CustomUser, UserProfile, BlockchainWallet, KYCVerification, InvestorProfile
+
+from drf_spectacular.utils import extend_schema
+
 
 # Create your views here.
 User = get_user_model()
@@ -58,13 +63,105 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         #email, created = allauthEmailAddress(user = )
         self.perform_create(serializer)
         send_email_confirmation(request, serializer.instance)
+
+        user_profile = UserProfile.objects.create(user=serializer.instance)
+        user_profile.phone_number = request.data.get('phone_number', '')
+        user_profile.address = request.data.get('address', '')
+        user_profile.preferred_currency = request.data.get('preferred_currency', 'USD')
+        user_profile.save()
+
         return Response(serializer.data, status=201)
+
+    @extend_schema(description="Email confirmation endpoint")
+    @action(detail=False, methods=['post'], url_path='confirm-email')
+    def confirm_email(self, request):
+        """
+        Confirm a user's email using the confirmation key sent via email.
+        Expects: { "key": "<confirmation_key>" }
+        """
+        key = request.data.get("key")
+        if not key:
+            return Response({"error": "Confirmation key is required."}, status=400)
+
+        try:
+            confirmation = EmailConfirmation.objects.get(key=key)
+
+        except EmailConfirmation.DoesNotExist:
+            # …and fall back to the HMAC helper, if you’re using that
+            confirmation = EmailConfirmationHMAC.from_key(key)
+            if confirmation is None:
+                return Response(
+                    {"error": "Invalid or expired confirmation key."},
+                    status=400
+                )
+
+        # At this point `confirmation` is either an EmailConfirmation instance
+        # or an EmailConfirmationHMAC object that wraps one.
+        if confirmation.email_address.verified:
+            return Response({"message": "Email already confirmed."}, status=200)
+
+        # This will mark the EmailAddress verified and send any signals
+        confirmation.confirm(request)
+
+        return Response({"message": "Email confirmed successfully."}, status=200)
     
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = []
+        return super().get_permissions()
+    
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        #email, created = allauthEmailAddress(user = )
+        self.perform_create(serializer)
+        send_email_confirmation(request, serializer.instance)
+
+        user_profile = UserProfile.objects.create(user=serializer.instance)
+        
+        return Response(serializer.data, status=201)
+
+    @extend_schema(description="Email confirmation endpoint")
+    @action(detail=False, methods=['post'], url_path='confirm-email')
+    def confirm_email(self, request):
+        """
+        Confirm a user's email using the confirmation key sent via email.
+        Expects: { "key": "<confirmation_key>" }
+        """
+        key = request.data.get("key")
+        if not key:
+            return Response({"error": "Confirmation key is required."}, status=400)
+
+        try:
+            confirmation = EmailConfirmation.objects.get(key=key)
+
+        except EmailConfirmation.DoesNotExist:
+            # …and fall back to the HMAC helper, if you’re using that
+            confirmation = EmailConfirmationHMAC.from_key(key)
+            if confirmation is None:
+                return Response(
+                    {"error": "Invalid or expired confirmation key."},
+                    status=400
+                )
+
+        # At this point `confirmation` is either an EmailConfirmation instance
+        # or an EmailConfirmationHMAC object that wraps one.
+        if confirmation.email_address.verified:
+            return Response({"message": "Email already confirmed."}, status=200)
+
+        # This will mark the EmailAddress verified and send any signals
+        confirmation.confirm(request)
+
+        return Response({"message": "Email confirmed successfully."}, status=200)
+    
 
 
 class BlockchainWalletViewSet(viewsets.ModelViewSet):
@@ -83,6 +180,54 @@ class InvestorProfileViewSet(viewsets.ModelViewSet):
     queryset = InvestorProfile.objects.all()
     serializer_class = InvestorProfileSerializer
     permission_classes = [IsAuthenticated]
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class LoginView(APIView):
+    """
+    ViewSet for handling user login.
+    """
+
+    @extend_schema(description="Login endpoint")
+    def post(self, request):
+        """
+        Login a user and return JWT tokens.
+        Expects: { "email": "<user_email>" }
+        """
+        email = request.data.get("email")
+        password = request.data.get("password")
+        if not email:
+            return Response({"error": "Email is required."}, status=400)
+
+        try:
+            user = CustomUser.objects.get(email=email)
+            if not user.check_password(password):
+                return Response({"error": "Invalid password."}, status=400)
+            user = authenticate(request, username=user.email, password=password)
+            if user is None:
+                return Response({"error": "Invalid credentials."}, status=401)
+            refresh_token = RefreshToken.for_user(user)
+            access_token = AccessToken.for_user(user)
+            return Response({
+                'refresh': str(refresh_token),
+                'access': str(access_token),
+                'user': {
+                    'email': user.email,
+                    'id': user.id,
+                    'wallet_address': user.wallet_address,
+                }
+            }, status=200)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+
+
+
+
+
+
+
+
+
 
 
 
