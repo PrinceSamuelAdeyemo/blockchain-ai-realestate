@@ -94,7 +94,7 @@ class Command(BaseCommand):
             'price_per_sqm'
         ]
         return df[features], df['price_in_USD']
-
+ 
     def train_xgboost(self, X, y):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
