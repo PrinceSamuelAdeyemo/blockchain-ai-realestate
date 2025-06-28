@@ -42,7 +42,7 @@ export default function SignUp() {
       return;
     } */
   
-    const fullData = {
+    const fullData = {  
       ...formData,
       //wallet_address: account,
       // auth_token: authToken,
@@ -102,6 +102,7 @@ export default function SignUp() {
     if (signupResponse.status == 201) {
       alert('Registration successful! Please check your email for verification.');
       // Redirect to login page or perform any other action
+      //window.location.href = '/confirm-email/{confirmation_key}';
     } else {
       alert(`Error: ${responseData || 'Failed to register'}`);
     }
