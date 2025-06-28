@@ -53,6 +53,9 @@ class Property(models.Model):
     current_rent = models.DecimalField(max_digits=12, decimal_places=2, null=True)
     purchase_type = models.CharField(max_length=9, choices=PROPERTY_PURCHASE_TYPES, default='ANY', blank=True, null=True)  # single or crowdfund
     is_available_for_rent = models.BooleanField(default=False)  # For rental properties
+    crowdfund_target = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)  # Target amount for crowdfunding
+    amount_raised = models.DecimalField(max_digits=15, decimal_places=2, default=0.00, blank=True, null=True)  # Amount raised in crowdfunding
+    crowdfund_start_date = models.DateField(null=True, blank=True)  # Start date for crowdfunding
     
     # Blockchain related
     blockchain_tx_hash = models.CharField(max_length=66, blank=True, null=True)
@@ -67,6 +70,11 @@ class Property(models.Model):
     
     def __str__(self):
         return f"{self.reference_id} - {self.title}"
+    
+    def save(self, *args, **kwargs):
+        self.crowdfund_target = self.base_value
+        super().save(*args, **kwargs)
+
     
     
 class PropertyType(models.Model):
