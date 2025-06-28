@@ -95,8 +95,9 @@ ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'http://localhost:3000'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    
     'core.middleware.Web3SessionMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -107,10 +108,18 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'realestate_backend.urls'
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS= [
     "http://localhost:3000",  # Frontend URL
 ]
-CORS_ALLOWS_CREDENTIALS = True
+
+
+#CORS_ORIGIN_ALLOW_ALL = True  
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',  # Frontend URL
+]
+#CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOW_CREDENTIALS = False   
 
 TEMPLATES = [
     {
