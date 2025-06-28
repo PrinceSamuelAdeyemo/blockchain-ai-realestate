@@ -32,13 +32,15 @@ backend/realestate_backend/transactions/migrations/
 #Frontend
 frontend/dapp-ai-realestate/node_modules
 frontend/dapp-ai/realestate/.env
-frontend/dapp-ai-realestate/.next
-frontend/dapp-ai/realestate/.next/static
-frontend/dapp-ai/realestate/.next/cache
-frontend/dapp-ai-realestate/.next/trace
+frontend/dapp-ai-realestate/.next/
+frontend/dapp-ai/realestate/.next/static/
+frontend/dapp-ai/realestate/.next/cache/
+frontend/dapp-ai-realestate/.next/trace/
 frontend/dapp-ai-realestate/.next/static/chunks/
 frontend/dapp-ai-realestate/.next/static/media/
 frontend/dapp-ai-realestate/.env.local
+frontend/dapp-ai-realestate/.next/server/
+
 
 # Blockchain
 blockchain/realestate/.env
