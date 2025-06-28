@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import axios from 'axios';
 
 export default function Login() {
   const [email, setEmail] = useState<string>('');
@@ -12,8 +13,31 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here
-    window.location.href = '/'; // Redirect to homepage after login
-  };
+    if (email === '' || password === '') {
+      alert('Please fill in all fields');
+      return;
+    }
+    
+  const res = fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/core/api/login/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Login failed');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        localStorage.setItem('userDetails', JSON.stringify(data));
+        alert('Login successful');
+        window.location.href = '/';
+      })
+
+    }
 
   return (
     <>
