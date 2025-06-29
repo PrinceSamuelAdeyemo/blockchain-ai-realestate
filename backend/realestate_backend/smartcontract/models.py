@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Count, Case, When, IntegerField
-from transactions import Transaction
+from transactions.models import Transaction
 from tokenization.models import TokenOwnership
 import uuid
 from django.db.models import F

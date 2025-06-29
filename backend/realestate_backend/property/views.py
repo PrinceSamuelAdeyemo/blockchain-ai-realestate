@@ -71,7 +71,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
 
-    
+    """
     def create(self, request, *args, **kwargs):
         print(request.data)
         request.data["owners"] = [request.data["owners"]]
@@ -150,11 +150,85 @@ class PropertyViewSet(viewsets.ModelViewSet):
         except Exception as e:
             print("Blockchain registration failed:", e)
 
+
+        property_instance = self.get_object()
+        # Handle images
+        for img in request.FILES.getlist('images'):
+            PropertyImage.objects.create(property=property_instance, image=img)
+        # Handle documents
+        for doc in request.FILES.getlist('documents'):
+            PropertyDocument.objects.create(property=property_instance, file=doc)
+
         # Still return backend result even if blockchain fails
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    
+    """
+
+    def create(self, request, *args, **kwargs):
+        # Prepare data for serializer validation
+        request.data["owners"] = [request.data["owners"]]
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Extract validated data for blockchain use (but don't save yet)
+        validated_data = serializer.validated_data
+        owner = CustomUser.objects.get(id=request.data["owners"][0])
+        owner_wallet_address = owner.wallet_address if owner else None
+
+        try:
+            # Connect to Ganache
+            w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
+            if not w3.is_connected():
+                raise Exception("Web3 is not connected to Ganache")
+
+            # Load contract ABI and address
+            contract_path = [
+                'P:\\', 'decentralized_ai_realestate', 'blockchain',
+                'artifacts', 'contracts', 'PropertyCrowdfund.sol', 'PropertyCrowdfund.json'
+            ]
+            with open(os.path.join(*contract_path)) as f:
+                contract_json = json.load(f)
+
+            contract_abi = contract_json["abi"]
+            contract_address = Web3.to_checksum_address(config("PROPERTYCROWDFUND_CONTRACTADDRESS"))
+            contract = w3.eth.contract(address=contract_address, abi=contract_abi)
+
+            # Price in ETH -> Wei conversion
+            eth_usd_rate = 2700  # Or get live rate
+            base_value = float(request.data.get("base_value", 0))
+            price_in_eth = base_value / eth_usd_rate
+            price_in_wei = w3.to_wei(price_in_eth, 'ether')
+
+            # Determine sender account
+            sender = Web3.to_checksum_address(owner_wallet_address) if owner_wallet_address else w3.eth.accounts[0]
+
+            # Blockchain transaction
+            tx_hash = contract.functions.listProperty(int(price_in_wei)).transact({'from': sender})
+            tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+            logs = contract.events.PropertyListed().process_receipt(tx_receipt)
+            blockchain_property_id = logs[0]['args']['propertyId'] if logs else None
+
+        except Exception as e:
+            # Blockchain failed, do not save to backend
+            return Response({"error": f"Blockchain registration failed: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # If blockchain succeeded, save to backend
+        self.perform_create(serializer)
+        property_instance = serializer.instance
+        property_instance.blockchain_tx_hash = tx_hash.hex()
+        property_instance.save()
+
+        # Handle images/documents if needed
+        for img in request.FILES.getlist('images'):
+            PropertyImage.objects.create(property=property_instance, image=img)
+        for doc in request.FILES.getlist('documents'):
+            PropertyDocument.objects.create(property=property_instance, file=doc)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)

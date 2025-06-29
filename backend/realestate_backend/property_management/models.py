@@ -1,8 +1,6 @@
 from django.db import models
 import uuid
 
-from reportlab.pdfgen import canvas
-from io import BytesIO
 
 # Create your models here.
 class Lease(models.Model):
@@ -76,22 +74,6 @@ class Lease(models.Model):
             document=self.document  # Copy previous document
         )
     
-    def generate_rent_statement(self):
-        """Create PDF rent statement"""
-        buffer = BytesIO()
-        p = canvas.Canvas(buffer)
-        
-        # PDF generation logic
-        p.drawString(100, 800, f"RENT STATEMENT - {self.property.title}")
-        p.drawString(100, 780, f"Tenant: {self.tenant.full_name}")
-        p.drawString(100, 760, f"Period: {datetime.now().strftime('%B %Y')}")
-        p.drawString(100, 740, f"Amount Due: ${self.monthly_rent}")
-        
-        p.showPage()
-        p.save()
-        
-        buffer.seek(0)
-        return buffer
     
     
 class Tenant(models.Model):
