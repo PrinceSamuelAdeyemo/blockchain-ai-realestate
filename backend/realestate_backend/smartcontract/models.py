@@ -1,15 +1,22 @@
 from django.db import models
 from django.db.models import Count, Case, When, IntegerField
-# Create your models here.
-
+from transactions import Transaction
+from tokenization.models import TokenOwnership
+import uuid
+from django.db.models import F
 from web3 import Web3
 from django.db import transaction
+# Create your models here.
+
+
 
 
 
 class ContractEvent(models.Model):
-    contract = models.ForeignKey(SmartContract, on_delete=models.CASCADE)
-    transaction = models.ForeignKey("Transaction", on_delete=models.CASCADE)
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    contract = models.ForeignKey("smartcontract.SmartContract", on_delete=models.CASCADE)
+    transaction = models.ForeignKey("transactions.Transaction", on_delete=models.CASCADE)
     event_name = models.CharField(max_length=100)
     event_signature = models.CharField(max_length=66)
     block_number = models.IntegerField()
@@ -18,8 +25,10 @@ class ContractEvent(models.Model):
     raw_data = models.JSONField()
     processed = models.BooleanField(default=False)
     timestamp = models.DateTimeField()
-    property_id = models.CharField(max_length=100, null=True, blank=True)
-
+    property_id = models.ForeignKey(
+        "property.Property", on_delete=models.CASCADE
+    , null=True, blank=True, related_name='contract_events'
+    )
     @classmethod
     def create_from_web3_event(cls, contract, web3_event):
         """Create DB record from Web3 event"""
@@ -61,33 +70,9 @@ class ContractEvent(models.Model):
         ).update(
             is_verified=False
         )
-    
-    def get_maintenance_priority_stats(property_id=None):
-    
-    
-        queryset = MaintenanceRequest.objects.all()
-        if property_id:
-            queryset = queryset.filter(property_id=property_id)
-        
-        return queryset.annotate(
-            priority_value=Case(
-                When(priority='URGENT', then=4),
-                When(priority='HIGH', then=3),
-                When(priority='MEDIUM', then=2),
-                When(priority='LOW', then=1),
-                output_field=IntegerField()
-            )
-        ).values('priority').annotate(
-            count=Count('id'),
-            avg_days_to_complete=Avg(
-                F('completed_date') - F('created_at'),
-                output_field=DurationField()
-            ),
-            avg_cost=Avg('actual_cost')
-        ).order_by('-priority_value')
-        
          
 class SmartContract(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     contract_type = models.CharField(max_length=50)
     address = models.CharField(max_length=42, unique=True)
@@ -131,6 +116,7 @@ class SmartContract(models.Model):
     
     
 class GasFeeRecord(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     network = models.CharField(max_length=50)
     transaction_hash = models.CharField(max_length=66)
     block_number = models.IntegerField()
