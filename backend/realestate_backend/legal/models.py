@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+import uuid
 
 # Create your models here.
 class RegulatoryCheck(models.Model):
@@ -17,6 +18,9 @@ class RegulatoryCheck(models.Model):
         ('REJECTED', 'Rejected'),
         ('EXEMPT', 'Exempt')
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Core Relationships
     user = models.ForeignKey('core.UserProfile', on_delete=models.CASCADE, related_name='regulatory_checks')
@@ -66,6 +70,9 @@ class TaxRecord(models.Model):
         ('UK', 'United Kingdom'),
         ('SG', 'Singapore')
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Core Relationships
     user = models.ForeignKey('core.UserProfile', on_delete=models.CASCADE, related_name='tax_records')
@@ -176,6 +183,9 @@ class LegalDocument(models.Model):
         ('EXPIRED', 'Expired')
     )
 
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     # Core Information
     document_type = models.CharField(max_length=15, choices=DOCUMENT_TYPES)
     title = models.CharField(max_length=200)
@@ -272,6 +282,8 @@ class ComplianceRule(models.Model):
     )
 
     # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    
     rule_id = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=100)
     description = models.TextField()

@@ -6,7 +6,6 @@ from django.db.models import Count, Case, When, IntegerField
 
 
 class Lease(models.Model):
-    # ... (existing fields) ...
     
     def create_renewal_offer(self):
         """Generate a new lease with 1-year extension"""

@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 # Create your models here.
 class TokenizedAsset(models.Model):
@@ -15,6 +16,9 @@ class TokenizedAsset(models.Model):
         related_name='tokenized_asset'
     )
     
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     # Token Configuration
     token_standard = models.CharField(max_length=10, choices=TOKEN_STANDARDS)
     token_symbol = models.CharField(max_length=5)  # e.g. "REPTK"
@@ -52,6 +56,9 @@ class TokenOwnership(models.Model):
         on_delete=models.CASCADE,
         related_name='ownership_records'
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     # Balance Tracking
     balance = models.DecimalField(max_digits=28, decimal_places=18)
@@ -83,6 +90,9 @@ class FractionalOwnership(models.Model):
         on_delete=models.CASCADE,
         related_name='fractional_details'
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     # Legal Attributes
     ownership_percentage = models.DecimalField(max_digits=7, decimal_places=4)  # e.g. 12.3456%
@@ -115,6 +125,9 @@ class TokenTransaction(models.Model):
         ('CONFIRMED', 'Confirmed'),
         ('FAILED', 'Failed')
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     # Core References
     asset = models.ForeignKey(

@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 # Create your models here.
 class Lease(models.Model):
@@ -14,6 +15,9 @@ class Lease(models.Model):
         ('EXPIRED', 'Expired'),
         ('TERMINATED', 'Terminated')
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Core Relationships
     property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='leases')
@@ -62,6 +66,9 @@ class Tenant(models.Model):
         null=True,
         blank=True
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     # Contact Information
     full_name = models.CharField(max_length=150)
@@ -111,6 +118,9 @@ class MaintenanceRequest(models.Model):
         ('DEFERRED', 'Deferred')
     )
 
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     # Core Relationships
     property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='maintenance_requests')
     submitted_by = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT, related_name='submitted_requests')
@@ -159,6 +169,9 @@ class Inspection(models.Model):
         ('ROUTINE', 'Routine'),
         ('SPECIAL', 'Special')
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Core Relationships
     property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='inspections')

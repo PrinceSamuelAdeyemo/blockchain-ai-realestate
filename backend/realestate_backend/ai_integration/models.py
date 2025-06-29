@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+import uuid
 
 # Create your models here.
 class ModelVersion(models.Model):
@@ -19,6 +20,7 @@ class ModelVersion(models.Model):
     )
 
     # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     model_type = models.CharField(max_length=15, choices=MODEL_TYPES)
     version = models.CharField(max_length=50)  # Semantic versioning
     framework = models.CharField(max_length=10, choices=FRAMEWORKS)
@@ -72,6 +74,8 @@ class ModelVersion(models.Model):
     
     
 class Prediction(models.Model):
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Core Relationships
     model_version = models.ForeignKey('ModelVersion', on_delete=models.PROTECT)
     property = models.ForeignKey('property.Property', on_delete=models.CASCADE, null=True, blank=True)
@@ -113,6 +117,8 @@ class TrainingData(models.Model):
     name = models.CharField(max_length=100)
     data_type = models.CharField(max_length=15, choices=DATA_TYPES)
     version = models.CharField(max_length=50)
+    description = models.TextField(blank=True, null=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     # Storage Details
     storage_location = models.CharField(max_length=255)
@@ -144,6 +150,7 @@ class FeatureSet(models.Model):
     # Core Identification
     name = models.CharField(max_length=100)
     version = models.CharField(max_length=50)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     # Feature Definitions
     features = models.JSONField()  # List of {name: str, type: str, source: str, description: str}

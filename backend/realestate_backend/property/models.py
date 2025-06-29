@@ -18,11 +18,11 @@ class Property(models.Model):
     )
     
     # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    # Core Identification
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
-    reference_id = models.UUIDField(default=uuid.uuid4, editable=False, blank = True)
-    owners = models.ManyToManyField(User, related_name='properties')  # Many-to-many relationship with users
-    #reference_id = models.CharField(max_length=20, unique=True, blank=True, null=True)  # Internal ID
     
     # Location
     address = models.TextField()
@@ -84,6 +84,9 @@ class PropertyType(models.Model):
         ('INDUSTRIAL', 'Industrial'),
         ('LAND', 'Land')
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     name = models.CharField(max_length=100)  # e.g., "Apartment", "Office Building"
     category = models.CharField(max_length=20, choices=CATEGORIES)
@@ -101,6 +104,8 @@ class Amenity(models.Model):
         ('COMMUNITY', 'Community Amenity')
     )
     
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=20, choices=AMENITY_TYPES)
     icon = models.CharField(max_length=50, blank=True)  # For UI
@@ -118,6 +123,8 @@ class PropertyImage(models.Model):
         ('EXTERIOR', 'Exterior View'),
         ('AERIAL', 'Aerial View')
     )
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='property_images/')
@@ -143,6 +150,8 @@ class PropertyDocument(models.Model):
         ('CONTRACT', 'Sales Contract'),
         ('OTHER', 'Other')
     )
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='documents')
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)

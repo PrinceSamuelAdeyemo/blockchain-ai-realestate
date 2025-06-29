@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -16,6 +17,9 @@ class Investment(models.Model):
         ('LIQUIDATED', 'Liquidated'),
         ('DEFAULTED', 'Defaulted')
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Core Relationships
     investor = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT, related_name='investments')
@@ -48,6 +52,9 @@ class Investment(models.Model):
     
     
 class DividendPayout(models.Model):
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     # Core Relationships
     investment = models.ForeignKey('Investment', on_delete=models.PROTECT, related_name='dividends')
     asset = models.ForeignKey('tokenization.TokenizedAsset', on_delete=models.PROTECT)
@@ -91,6 +98,9 @@ class Transaction(models.Model):
         ('REVERSED', 'Reversed')
     )
 
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     # Core Fields
     transaction_type = models.CharField(max_length=15, choices=TX_TYPES)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
@@ -105,8 +115,8 @@ class Transaction(models.Model):
     initiated_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
     
-    # References
-    reference_id = models.CharField(max_length=100, blank=True)  # External ID
+    
+    # reference_id = main id  # External ID
     related_asset = models.ForeignKey('tokenization.TokenizedAsset', on_delete=models.SET_NULL, null=True, blank=True)
     
     # Blockchain Data
@@ -138,6 +148,9 @@ class Escrow(models.Model):
         ('DISPUTED', 'In Dispute')
     )
 
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    
     # Core Configuration
     escrow_type = models.CharField(max_length=10, choices=ESCROW_TYPES)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ACTIVE')

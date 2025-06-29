@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 # Create your models here.
@@ -16,6 +17,9 @@ class VotingProposal(models.Model):
         ('REJECTED', 'Proposal Rejected'),
         ('IMPLEMENTED', 'Implemented')
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Core Relationships
     tokenized_asset = models.ForeignKey(
@@ -96,6 +100,9 @@ class Vote(models.Model):
         ('ABSTAIN', 'Abstain')
     )
 
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     # Core Relationships
     proposal = models.ForeignKey('VotingProposal', on_delete=models.CASCADE, related_name='votes')
     voter = models.ForeignKey('core.UserProfile', on_delete=models.PROTECT)
@@ -130,6 +137,8 @@ class GovernanceRule(models.Model):
         ('USER', 'User-specific')
     )
 
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Core Configuration
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()

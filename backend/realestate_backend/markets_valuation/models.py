@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 # Create your models here.
@@ -7,6 +8,9 @@ class Valuation(models.Model):
         ('MANUAL', 'Appraiser Valuation'),
         ('HYBRID', 'AI-Assisted')
     )
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Core Relationships
     property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='valuations')
@@ -43,6 +47,9 @@ class MarketTrend(models.Model):
         ('MACRO', 'Macroeconomic')
     )
 
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     # Geographic Scope
     region_type = models.CharField(max_length=20)  # country/state/city/neighborhood
     region_id = models.CharField(max_length=100)  # ISO code or custom ID
@@ -70,6 +77,9 @@ class MarketTrend(models.Model):
     
     
 class PriceHistory(models.Model):
+
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Core Relationships
     property = models.ForeignKey('property.Property', on_delete=models.CASCADE, related_name='price_history')
     
@@ -94,7 +104,8 @@ class PriceHistory(models.Model):
     
 class NeighborhoodData(models.Model):
     # Geographic Identification
-    neighborhood_id = models.CharField(max_length=50, unique=True)
+# Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)

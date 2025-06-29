@@ -35,6 +35,8 @@ class CustomUserManager(BaseUserManager):
     
     
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)#, blank=True, null=True)
     blockchain = models.CharField(max_length=15, blank=True, null=True)
     wallet_address = models.CharField(max_length=42, blank=True, null=True)
@@ -57,6 +59,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Web3Session(models.Model):
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     session_key = models.CharField(max_length=40)
     address = models.CharField(max_length=42)
@@ -83,6 +87,8 @@ class UserProfile(models.Model):
         related_name='profile'
     )
     
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # User Metadata
     user_type = models.CharField(max_length=15, choices=USER_TYPES)
     phone_number = models.CharField(max_length=20, blank=True)
@@ -126,6 +132,8 @@ class BlockchainWallet(models.Model):
         related_name='wallets'
     )
     
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Wallet Configuration
     address = models.CharField(max_length=42, unique=True)
     wallet_type = models.CharField(max_length=8, choices=WALLET_TYPES)
@@ -165,6 +173,8 @@ class KYCVerification(models.Model):
         related_name='kyc'
     )
     
+    # Core Identification
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Personal Details
     full_legal_name = models.CharField(max_length=150)
     date_of_birth = models.DateField()
