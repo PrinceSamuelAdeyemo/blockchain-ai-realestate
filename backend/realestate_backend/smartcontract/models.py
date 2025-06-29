@@ -8,8 +8,18 @@ from django.db import transaction
 
 
 class ContractEvent(models.Model):
-    # ... (existing fields) ...
-    
+    contract = models.ForeignKey(SmartContract, on_delete=models.CASCADE)
+    transaction = models.ForeignKey("Transaction", on_delete=models.CASCADE)
+    event_name = models.CharField(max_length=100)
+    event_signature = models.CharField(max_length=66)
+    block_number = models.IntegerField()
+    log_index = models.IntegerField()
+    arguments = models.JSONField()
+    raw_data = models.JSONField()
+    processed = models.BooleanField(default=False)
+    timestamp = models.DateTimeField()
+    property_id = models.CharField(max_length=100, null=True, blank=True)
+
     @classmethod
     def create_from_web3_event(cls, contract, web3_event):
         """Create DB record from Web3 event"""
@@ -78,7 +88,17 @@ class ContractEvent(models.Model):
         
          
 class SmartContract(models.Model):
-    # ... (existing fields) ...
+    name = models.CharField(max_length=100)
+    contract_type = models.CharField(max_length=50)
+    address = models.CharField(max_length=42, unique=True)
+    abi = models.JSONField()
+    network = models.CharField(max_length=50)
+    deployer = models.CharField(max_length=42)
+    deployment_tx = models.CharField(max_length=66, null=True, blank=True)
+    deployment_block = models.IntegerField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     def deploy_to_blockchain(self):
         from web3 import Web3
@@ -111,7 +131,14 @@ class SmartContract(models.Model):
     
     
 class GasFeeRecord(models.Model):
-    # ... (existing fields) ...
+    network = models.CharField(max_length=50)
+    transaction_hash = models.CharField(max_length=66)
+    block_number = models.IntegerField()
+    gas_price = models.DecimalField(max_digits=30, decimal_places=0)
+    gas_used = models.DecimalField(max_digits=30, decimal_places=0)
+    gas_limit = models.DecimalField(max_digits=30, decimal_places=0)
+    usd_cost = models.DecimalField(max_digits=20, decimal_places=8)
+    block_time = models.DateTimeField()
     
     @classmethod
     def analyze_network_fees(cls, network, days=30):
