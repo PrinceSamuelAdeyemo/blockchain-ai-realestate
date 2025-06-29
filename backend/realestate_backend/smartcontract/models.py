@@ -2,49 +2,6 @@ from django.db import models
 from django.db.models import Count, Case, When, IntegerField
 # Create your models here.
 
-
-
-
-class Lease(models.Model):
-    
-    def create_renewal_offer(self):
-        """Generate a new lease with 1-year extension"""
-        if self.status != 'ACTIVE':
-            raise ValueError("Only active leases can be renewed")
-            
-        return Lease.objects.create(
-            property=self.property,
-            tenant=self.tenant,
-            lease_type=self.lease_type,
-            start_date=self.end_date + timedelta(days=1),
-            end_date=self.end_date + timedelta(days=365),
-            monthly_rent=self.monthly_rent * Decimal('1.03'),  # 3% increase
-            security_deposit=self.security_deposit,
-            payment_due_day=self.payment_due_day,
-            document=self.document  # Copy previous document
-        )
-    
-    def generate_rent_statement(self):
-        """Create PDF rent statement"""
-        from reportlab.pdfgen import canvas
-        from io import BytesIO
-        
-        buffer = BytesIO()
-        p = canvas.Canvas(buffer)
-        
-        # PDF generation logic
-        p.drawString(100, 800, f"RENT STATEMENT - {self.property.title}")
-        p.drawString(100, 780, f"Tenant: {self.tenant.full_name}")
-        p.drawString(100, 760, f"Period: {datetime.now().strftime('%B %Y')}")
-        p.drawString(100, 740, f"Amount Due: ${self.monthly_rent}")
-        
-        p.showPage()
-        p.save()
-        
-        buffer.seek(0)
-        return buffer
-    
-    
 from web3 import Web3
 from django.db import transaction
 
