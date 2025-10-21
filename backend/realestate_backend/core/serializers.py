@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from .models import (
     CustomUser,
     UserProfile,
@@ -10,10 +11,11 @@ from .models import (
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = [
-            'id', 'email', 'blockchain', 'wallet_address',
+        """ fields = [
+            'id', 'first_name', 'middle_name', 'last_name', 'email', 'blockchain', 'wallet_address',
             'is_active', 'is_staff', 'password'
-        ]
+        ] """
+        fields = "__all__"
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -40,6 +42,21 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'bio', 'is_verified', 'verification_level', 'preferred_currency',
             'language', 'default_wallet', 'created_at', 'last_updated'
         ]
+
+        extra_kwargs = {
+            'phone_number': {'required': True},
+            'address': {'required': True}
+        }
+
+        validators = [
+            UniqueTogetherValidator(
+                queryset=UserProfile.objects.all(),
+                fields=['user', 'phone_number'],
+                message="This phone number is already in use."
+            )
+        ]
+
+        read_only_fields = ['id', 'is_verified', 'verification_level', 'language', 'created_at', 'last_updated']
 
 
 class BlockchainWalletSerializer(serializers.ModelSerializer):
