@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin 
+from django.contrib.auth.models import BaseUserManager, AbstractUser, AbstractBaseUser, PermissionsMixin 
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
@@ -34,10 +34,11 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email = email, password = password, **extra_fields)
     
     
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractUser, AbstractBaseUser, PermissionsMixin):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)#, blank=True, null=True)
+    username = models.CharField(max_length=15, blank=True, null=True, unique=True)
     blockchain = models.CharField(max_length=15, blank=True, null=True)
     wallet_address = models.CharField(max_length=42, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
