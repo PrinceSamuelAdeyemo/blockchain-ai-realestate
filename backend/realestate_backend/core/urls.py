@@ -11,6 +11,8 @@ from .views import (
     google_login,
     validate_google_token,
     LoginView,
+    ChangePasswordView,
+    ResetPasswordView,
 )
 from .api import Web3LoginAPI, get_nonce, verify_signature
 from .session_api import Web3SessionCreateView, Web3SessionVerifyView
@@ -56,4 +58,6 @@ urlpatterns = [
     # Custom endpoints
     path('api/login/', LoginView.as_view(), name='login'),
     #path('api/logout/', views.LogoutView.as_view(), name='logout'),
+    path('api/change-password', ChangePasswordView.as_view(), name='change-password'),
+    path('api/reset-password', ResetPasswordView.as_view(), name='reset-password'),
 ]
