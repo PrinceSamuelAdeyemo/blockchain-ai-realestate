@@ -7,7 +7,7 @@ ai_integration/migrations/
 #Backend
 backend/backend_venv
 backend/realestate_backend/.env
-backend/realestate_backend/*/__pycache__/
+backend/realestate_backend/*//__pycache__
 backend/realestate_backend/*/migrations/
 
 
