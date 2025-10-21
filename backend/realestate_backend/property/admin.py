@@ -4,7 +4,8 @@ from . models import (
     PropertyType,
     Amenity,
     PropertyImage,
-    PropertyDocument
+    PropertyDocument,
+    PropertyContribution,
 )
 # Register your models here.
 admin.site.register([
@@ -12,5 +13,6 @@ admin.site.register([
     PropertyType,
     Amenity,
     PropertyImage,
-    PropertyDocument
+    PropertyDocument,
+    PropertyContribution,
 ])
