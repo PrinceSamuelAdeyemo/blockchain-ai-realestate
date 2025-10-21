@@ -8,7 +8,8 @@ from .views import (
     PropertyImageViewSet,   
     PropertyDocumentViewSet,
     predict_price,
-    load_model_and_predict
+    load_model_and_predict,
+    contribute_to_property,
 )
 
 router = DefaultRouter()
@@ -23,6 +24,7 @@ urlpatterns = [
     path('api/v1/predict/', predict_price, name='predict_price'),
     path('api/v1/load_model_and_predict/', load_model_and_predict, name='load_model_and_predict'),
     path('api/v1/', include(router.urls)),
+    path('api/v1/properties/<uuid:property_id>/contribute/', contribute_to_property, name='contribute_to_property'),
 ]
     
     
