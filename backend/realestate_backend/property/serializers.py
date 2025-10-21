@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Property, PropertyType, Amenity, PropertyImage, PropertyDocument
+from .models import Property, PropertyType, Amenity, PropertyImage, PropertyDocument, PropertyContribution
 
 class PropertyTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,7 +42,7 @@ class PropertySerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
         fields = [
-            "id", "title", "slug", "address", "city", "state", "country", "postal_code",
+            "id", "owners", "title", "slug", "address", "city", "state", "country", "postal_code",
             "latitude", "longitude", "property_type", "property_type_id",
             "amenities", "amenity_ids", "total_area", "usable_area", "total_floors", "floor_number",
             "plot_size", "bedrooms", "bathrooms", "year_built", "description",
@@ -71,3 +71,10 @@ class PropertySerializer(serializers.ModelSerializer):
             instance.amenities.set(amenities)
         instance.save()
         return instance
+    
+
+class PropertyContributionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PropertyContribution
+        fields = ['id', 'property', 'amount_eth', 'tx_hash', 'contributor_wallet', 'confirmed']
+        read_only_fields = ['id']
