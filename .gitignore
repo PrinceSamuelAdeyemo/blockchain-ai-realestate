@@ -7,26 +7,9 @@ ai_integration/migrations/
 #Backend
 backend/backend_venv
 backend/realestate_backend/.env
-backend/realestate_backend/realestate_backend/__pycache__
-backend/realestate_backend/realestate_backend/migrations/__pycache__
-backend/realestate_backend/core/__pycache__/
-backend/realestate_backend/core/migrations/
-backend/realestate_backend/governance/migrations/
-backend/realestate_backend/legal/__pycache__/
-backend/realestate_backend/legal/migrations/
-backend/realestate_backend/markets_valuation/__pycache__/
-backend/realestate_backend/markets_valuation/migrations/
-backend/realestate_backend/property/__pycache__/
-backend/realestate_backend/property/migrations/
-backend/realestate_backend/property_management/__pycache__/
-backend/realestate_backend/property_management/migrations/
-backend/realestate_backend/realestate_backend/__pycache__/
-backend/realestate_backend/smartcontracts/__pycache__/
-backend/realestate_backend/smartcontracts/migrations/
-backend/realestate_backend/tokenization/__pycache__/
-backend/realestate_backend/tokenization/migrations/
-backend/realestate_backend/transactions/__pycache__/
-backend/realestate_backend/transactions/migrations/
+backend/realestate_backend/*/__pycache__/
+backend/realestate_backend/*/migrations/
+
 
 
 #Frontend
