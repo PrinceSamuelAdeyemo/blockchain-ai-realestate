@@ -19,7 +19,7 @@ class Property(models.Model):
     
     # Core Identification
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
+    owners = models.ManyToManyField(User, related_name='properties', blank=True)  # Multiple owners possible
     # Core Identification
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -34,7 +34,7 @@ class Property(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     
     # Characteristics
-    property_type = models.ForeignKey('PropertyType', on_delete=models.PROTECT)
+    property_type = models.ForeignKey('PropertyType', on_delete=models.PROTECT, related_name='properties')
     amenities = models.ManyToManyField('Amenity', blank=True)
     total_area = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # sqft/m²
     usable_area = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # sqft/m²
@@ -51,7 +51,7 @@ class Property(models.Model):
     price_per_sqm = models.DecimalField(max_digits=10, decimal_places=2)  # Price per square meter
     rental_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # Monthly rent
     current_rent = models.DecimalField(max_digits=12, decimal_places=2, null=True)
-    purchase_type = models.CharField(max_length=9, choices=PROPERTY_PURCHASE_TYPES, default='ANY', blank=True, null=True)  # single or crowdfund
+    purchase_type = models.CharField(max_length=18, choices=PROPERTY_PURCHASE_TYPES, default='ANY', blank=True, null=True)  # single or crowdfund
     is_available_for_rent = models.BooleanField(default=False)  # For rental properties
     crowdfund_target = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)  # Target amount for crowdfunding
     amount_raised = models.DecimalField(max_digits=15, decimal_places=2, default=0.00, blank=True, null=True)  # Amount raised in crowdfunding
@@ -69,13 +69,37 @@ class Property(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.reference_id} - {self.title}"
+        return f"{self.id} - {self.title}"
     
     def save(self, *args, **kwargs):
         self.crowdfund_target = self.base_value
         super().save(*args, **kwargs)
 
+    @property
+    def total_contributed(self):
+        return sum(c.amount_eth for c in self.contributions.all())
     
+    def update_funding_status(self):
+        self.amount_raised = sum(c.amount_eth for c in self.contributions.all()) * 2700
+        print(self.amount_raised)
+        if self.amount_raised >= self.crowdfund_target:
+            self.status = "SOLD"
+        
+        self.save()
+
+
+    
+class PropertyContribution(models.Model):
+    property = models.ForeignKey('Property', on_delete=models.CASCADE, related_name='contributions')
+    contributor_wallet = models.CharField(max_length=42)
+    amount_eth = models.DecimalField(max_digits=18, decimal_places=8)
+    tx_hash = models.CharField(max_length=66)
+    confirmed = models.BooleanField(default=True)  # optional if you want to verify on-chain
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    
+
+
     
 class PropertyType(models.Model):
     CATEGORIES = (
